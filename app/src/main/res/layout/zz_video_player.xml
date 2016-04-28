@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+    <org.lynxz.zzvideoview.widget.ZZVideoView
+        android:id="@+id/zzvv_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <org.lynxz.zzvideoview.widget.PlayerTitleBar
+        android:id="@+id/pt_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/normal_bar_height"
+        android:layout_alignParentTop="true"/>
+
+    <org.lynxz.zzvideoview.widget.PlayerController
+        android:id="@+id/pc_controller"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/normal_bar_height"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
