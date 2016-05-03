@@ -52,6 +52,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private int mDuration = 0;//视频长度
     private long mCurrentDownTime = 0;
     private long mLastDownTime = 0;
+    private int mCurrentPlayState = PlayState.IDLE;
+    private int mNetworkState = -1;//0-无网络
 
     private static final int MIN_CLICK_INTERVAL = 400;//连续两次down事件最小时间间隔(ms)
     private static final int UPDATE_TIMER_INTERVAL = 1000;
@@ -74,7 +76,31 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private IControllerImpl mControllerImpl = new IControllerImpl() {
         @Override
         public void onPlayTurn() {
+            //网络不正常时,不允许切换 TODO: 本地视频则跳过这一步
+            if (!mIPlayerImpl.isNetworkAvailable()) {
+                mIPlayerImpl.onNetWorkError();
+                return;
+            }
 
+            switch (mCurrentPlayState) {
+                case PlayState.PLAY:
+                    mController.setPlayState(PlayState.PAUSE);
+                    mCurrentPlayState = PlayState.PAUSE;
+                    pausePlay();
+                    break;
+                case PlayState.IDLE:
+                case PlayState.PAUSE:
+                case PlayState.COMPLETE:
+                case PlayState.STOP:
+                    mController.setPlayState(PlayState.PLAY);
+                    mCurrentPlayState = PlayState.PLAY;
+                    startPlay();
+                    break;
+                case PlayState.ERROR:
+                    break;
+            }
+
+            sendAutoHideBarsMsg();
         }
     };
 
@@ -111,6 +137,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         public void onCompletion(MediaPlayer mp) {
             mController.setPlayState(PlayState.STOP);
             mController.updateProgress(0, 0);
+            mCurrentPlayState = PlayState.COMPLETE;
+            stopUpdateTimer();
         }
     };
     private MediaPlayer.OnInfoListener mInfoListener = new MediaPlayer.OnInfoListener() {
@@ -170,8 +198,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         //        mVv.setOnInfoListener(mInfoListener);
         mVv.setOnCompletionListener(mCompletionListener);
         mVv.setOnErrorListener(mErrorListener);
-        resetUpdateTimer();
-
     }
 
     /**
@@ -232,10 +258,12 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     public void startPlay() {
         mVv.start();
         mController.setPlayState(PlayState.PLAY);
+        resetUpdateTimer();
     }
 
     public void pausePlay() {
         mVv.pause();
+        //        stopUpdateTimer();
     }
 
     public void stopPlay() {
@@ -264,18 +292,24 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            mCurrentDownTime = Calendar.getInstance().getTimeInMillis();
-            if (isTouchEventValid()) {
-                mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
-                if (mController.getVisibility() == VISIBLE) {
-                    showOrHideBars(false, true);
-                } else {
-                    showOrHideBars(true, true);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mCurrentDownTime = Calendar.getInstance().getTimeInMillis();
+                if (isTouchEventValid()) {
+                    mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
+                    if (mController.getVisibility() == VISIBLE) {
+                        showOrHideBars(false, true);
+                    } else {
+                        showOrHideBars(true, true);
+                    }
+                    mLastDownTime = mCurrentDownTime;
+                    return true;
                 }
-                mLastDownTime = mCurrentDownTime;
-                return true;
-            }
+                break;
+            case MotionEvent.ACTION_UP:
+                sendAutoHideBarsMsg();
+                break;
         }
         return false;
     }
@@ -319,11 +353,15 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mController.clearAnimation();
 
         if (show) {
-            mTitleBar.startAnimation(mEnterFromTop);
-            mController.startAnimation(mEnterFromBottom);
+            if (mTitleBar.getVisibility() != VISIBLE) {
+                mTitleBar.startAnimation(mEnterFromTop);
+                mController.startAnimation(mEnterFromBottom);
+            }
         } else {
-            mTitleBar.startAnimation(mExitFromTop);
-            mController.startAnimation(mExitFromBottom);
+            if (mTitleBar.getVisibility() != GONE) {
+                mTitleBar.startAnimation(mExitFromTop);
+                mController.startAnimation(mExitFromBottom);
+            }
         }
     }
 

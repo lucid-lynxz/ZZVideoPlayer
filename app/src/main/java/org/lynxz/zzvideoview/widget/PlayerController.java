@@ -24,7 +24,7 @@ import java.util.TimeZone;
  * Created by zxz on 2016/4/28.
  */
 public class PlayerController extends FrameLayout implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
-    private IControllerImpl mContrllerImpl;
+    private IControllerImpl mControllerImpl;
     private CustomSeekBar mCsb;
     private ImageView mIvPlayPause;
     private TextView mTvCurrentTime;
@@ -33,7 +33,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     private int mDuration = 0;//视频长度(ms)
     private SimpleDateFormat mFormatter = null;
     private static final String ZERO_TIME = "00:00";
-    private int mCurrentPlayState = PlayState.IDLE;//当前播放状态
 
     public PlayerController(Context context) {
         super(context);
@@ -71,6 +70,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
         rlPlayPause.setOnClickListener(this);
         rlToggleExpandable.setOnClickListener(this);
+        mIvPlayPause.setOnClickListener(this);
         mCsb.setOnSeekBarChangeListener(this);
     }
 
@@ -78,19 +78,23 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
      * 设置控制条功能回调
      */
     public void setControllerImpl(IControllerImpl controllerImpl) {
-        this.mContrllerImpl = controllerImpl;
+        this.mControllerImpl = controllerImpl;
     }
 
     @Override
     public void onClick(View v) {
-        if (mContrllerImpl == null) {
+        if (mControllerImpl == null) {
             return;
         }
 
         int id = v.getId();
-        if (id == R.id.rl_play_pause) {
-            mContrllerImpl.onPlayTurn();
+        switch (id) {
+            case R.id.rl_play_pause:
+            case R.id.iv_play_pause:
+                mControllerImpl.onPlayTurn();
+                break;
         }
+
     }
 
     @Override
@@ -114,15 +118,17 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
      * @param curPlayState 参考 {@link PlayState}
      */
     public void setPlayState(int curPlayState) {
-        mCurrentPlayState = curPlayState;
-        if (PlayState.PLAY == curPlayState) {
-            mIvPlayPause.setImageResource(R.drawable.zz_player_pause);
-        } else if (PlayState.PAUSE == curPlayState) {
-            mIvPlayPause.setImageResource(R.drawable.zz_player_play);
-        } else if (PlayState.STOP == curPlayState) {
-            mIvPlayPause.setImageResource(R.drawable.zz_player_play);
-        } else if (PlayState.ERROR == curPlayState) {
-            mIvPlayPause.setImageResource(R.drawable.zz_player_play);
+
+        switch (curPlayState) {
+            case PlayState.PLAY:
+                mIvPlayPause.setImageResource(R.drawable.zz_player_pause);
+                break;
+            case PlayState.PAUSE:
+            case PlayState.STOP:
+            case PlayState.COMPLETE:
+            case PlayState.ERROR:
+                mIvPlayPause.setImageResource(R.drawable.zz_player_play);
+                break;
         }
     }
 
@@ -156,11 +162,9 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
         }
         mTvTotalTime.setText(formatPlayTime(maxValue));
 
-        if (mCurrentPlayState == PlayState.PLAY || mCurrentPlayState == PlayState.PAUSE) {
-            mCsb.setProgress(progress);
-            mCsb.setSecondaryProgress(secondProgress * maxValue / 100);
-            mTvCurrentTime.setText(formatPlayTime(progress));
-        }
+        mCsb.setProgress(progress);
+        mCsb.setSecondaryProgress(secondProgress * maxValue / 100);
+        mTvCurrentTime.setText(formatPlayTime(progress));
     }
 
     @SuppressLint("SimpleDateFormat")
