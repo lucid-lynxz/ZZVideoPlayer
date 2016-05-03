@@ -55,6 +55,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     private static final int MIN_CLICK_INTERVAL = 400;//连续两次down事件最小时间间隔(ms)
     private static final int UPDATE_TIMER_INTERVAL = 1000;
+    private static final int TIME_AUTO_HIDE_BARS_DELAY = 1500;
+
     private static final int MSG_UPDATE_PROGRESS_TIME = 1;//更新播放进度时间
     private static final int MSG_AUTO_HIDE_BARS = 2;//隐藏标题栏和控制条
 
@@ -83,6 +85,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             int what = msg.what;
             if (what == MSG_UPDATE_PROGRESS_TIME) {
                 mController.updateProgress(getCurrentTime(), getBufferProgress());
+            } else if (what == MSG_AUTO_HIDE_BARS) {
+                animateShowOrHideBars(false);
             }
         }
     };
@@ -92,6 +96,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         public void onPrepared(MediaPlayer mp) {
             mDuration = mp.getDuration();
             mController.updateProgress(0, 0, mDuration);
+            sendAutoHideBarsMsg();
         }
     };
 
@@ -105,6 +110,15 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         @Override
         public void onCompletion(MediaPlayer mp) {
 
+        }
+    };
+    private MediaPlayer.OnInfoListener mInfoListener = new MediaPlayer.OnInfoListener() {
+        @Override
+        public boolean onInfo(MediaPlayer mp, int what, int extra) {
+            //  初始自动隐藏标题栏和控制栏
+            mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
+            mHandler.sendEmptyMessageDelayed(MSG_AUTO_HIDE_BARS, TIME_AUTO_HIDE_BARS_DELAY);
+            return false;
         }
     };
 
@@ -141,6 +155,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private void initView(Context context) {
         mContent = context;
         inflate(context, R.layout.zz_video_player, this);
+        View rlPlayer = findViewById(R.id.rl_player);
         mVv = (ZZVideoView) findViewById(R.id.zzvv_main);
         mTitleBar = (PlayerTitleBar) findViewById(R.id.pt_title_bar);
         mController = (PlayerController) findViewById(R.id.pc_controller);
@@ -151,7 +166,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mController.setControllerImpl(mControllerImpl);
 
         mVv.setOnTouchListener(this);
+        rlPlayer.setOnTouchListener(this);
         mVv.setOnPreparedListener(mPreparedListener);
+        //        mVv.setOnInfoListener(mInfoListener);
         mVv.setOnCompletionListener(mCompletionListener);
         mVv.setOnErrorListener(mErrorListener);
         resetUpdateTimer();
@@ -251,6 +268,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             mCurrentDownTime = Calendar.getInstance().getTimeInMillis();
             if (isTouchEventValid()) {
+                mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
                 if (mController.getVisibility() == VISIBLE) {
                     showOrHideBars(false, true);
                 } else {
@@ -349,5 +367,14 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      */
     private int getBufferProgress() {
         return mVv.getBufferPercentage();
+    }
+
+    /**
+     * 发送message给handler,自动隐藏标题栏
+     */
+    private void sendAutoHideBarsMsg() {
+        //  初始自动隐藏标题栏和控制栏
+        mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
+        mHandler.sendEmptyMessageDelayed(MSG_AUTO_HIDE_BARS, TIME_AUTO_HIDE_BARS_DELAY);
     }
 }

@@ -1,1 +1,31 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
 /build
+/captures
+
+# Gradle files
+.gradle/
+build/
+/gradlew
+/gradlew.bat
+/gradle
+
+# Built application files
+*.apk
+*.ap_
+
+# Files for the Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+
+/settings.gradle
+# build.gradle
