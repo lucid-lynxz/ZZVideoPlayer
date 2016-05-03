@@ -13,7 +13,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import org.lynxz.zzvideoview.R;
-import org.lynxz.zzvideoview.bean.PlayState;
+import org.lynxz.zzvideoview.constant.PlayState;
+import org.lynxz.zzvideoview.constant.SeekBarState;
 import org.lynxz.zzvideoview.controller.IControllerImpl;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +34,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     private int mDuration = 0;//视频长度(ms)
     private SimpleDateFormat mFormatter = null;
     private static final String ZERO_TIME = "00:00";
+    private boolean mUserOperateSeecbar = false;//用户是否正在操作进度条
 
     public PlayerController(Context context) {
         super(context);
@@ -94,21 +96,25 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
                 mControllerImpl.onPlayTurn();
                 break;
         }
-
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+        if (fromUser) {
+            mTvCurrentTime.setText(formatPlayTime(progress));
+        }
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
+        mControllerImpl.onProgressChange(SeekBarState.START_TRACKING, 0);
+        mUserOperateSeecbar = true;
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+        mControllerImpl.onProgressChange(SeekBarState.STOP_TRACKING, seekBar.getProgress());
+        mUserOperateSeecbar = false;
 
     }
 
@@ -142,16 +148,38 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 更新播放进度
+     * 参考 {@link #updateProgress(int, int, int, boolean)}
+     */
+    public void updateProgress(int progress, int secondProgress, int maxValue) {
+        updateProgress(progress, secondProgress, maxValue, mUserOperateSeecbar);
+    }
+
+    /**
+     * 更新播放进度
      *
      * @param progress       当前进度
      * @param secondProgress 缓冲进度
      * @param maxValue       最大值
+     * @param isTracking     用户是否正在操作中
      */
-    public void updateProgress(int progress, int secondProgress, int maxValue) {
+    public void updateProgress(int progress, int secondProgress, int maxValue, boolean isTracking) {
+        // 更新播放时间信息
+        initFormatter(maxValue);
+
+        //更新进度条
         mDuration = maxValue;
         mCsb.setMax(maxValue);
+        mCsb.setSecondaryProgress(secondProgress * maxValue / 100);
 
-        // 更新播放时间信息
+        if (!isTracking) {
+            mCsb.setProgress(progress);
+            mTvCurrentTime.setText(formatPlayTime(progress));
+        }
+
+        mTvTotalTime.setText(formatPlayTime(maxValue));
+    }
+
+    private void initFormatter(int maxValue) {
         if (mFormatter == null) {
             if (maxValue >= (59 * 60 * 1000 + 59 * 1000)) {
                 mFormatter = new SimpleDateFormat("HH:mm:ss");
@@ -160,11 +188,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
             }
             mFormatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
         }
-        mTvTotalTime.setText(formatPlayTime(maxValue));
-
-        mCsb.setProgress(progress);
-        mCsb.setSecondaryProgress(secondProgress * maxValue / 100);
-        mTvCurrentTime.setText(formatPlayTime(progress));
     }
 
     @SuppressLint("SimpleDateFormat")

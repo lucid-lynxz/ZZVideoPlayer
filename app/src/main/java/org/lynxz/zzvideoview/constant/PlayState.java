@@ -1,4 +1,4 @@
-package org.lynxz.zzvideoview.bean;
+package org.lynxz.zzvideoview.constant;
 
 /**
  * Created by zxz on 2016/5/3.

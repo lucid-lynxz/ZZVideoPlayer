@@ -30,4 +30,5 @@ public interface IPlayerImpl {
      * 播放发生异常
      */
     void onError();
+
 }

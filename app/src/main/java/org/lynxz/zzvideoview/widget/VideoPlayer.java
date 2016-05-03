@@ -16,7 +16,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import org.lynxz.zzvideoview.R;
-import org.lynxz.zzvideoview.bean.PlayState;
+import org.lynxz.zzvideoview.constant.PlayState;
+import org.lynxz.zzvideoview.constant.SeekBarState;
 import org.lynxz.zzvideoview.constant.VideoUriProtocol;
 import org.lynxz.zzvideoview.controller.AnimationImpl;
 import org.lynxz.zzvideoview.controller.IControllerImpl;
@@ -57,7 +58,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     private static final int MIN_CLICK_INTERVAL = 400;//连续两次down事件最小时间间隔(ms)
     private static final int UPDATE_TIMER_INTERVAL = 1000;
-    private static final int TIME_AUTO_HIDE_BARS_DELAY = 1500;
+    private static final int TIME_AUTO_HIDE_BARS_DELAY = 2000;
 
     private static final int MSG_UPDATE_PROGRESS_TIME = 1;//更新播放进度时间
     private static final int MSG_AUTO_HIDE_BARS = 2;//隐藏标题栏和控制条
@@ -101,6 +102,19 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             }
 
             sendAutoHideBarsMsg();
+        }
+
+        @Override
+        public void onProgressChange(int state, int progress) {
+            switch (state) {
+                case SeekBarState.START_TRACKING:
+                    mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
+                    break;
+                case SeekBarState.STOP_TRACKING:
+                    mVv.seekTo(progress);
+                    sendAutoHideBarsMsg();
+                    break;
+            }
         }
     };
 

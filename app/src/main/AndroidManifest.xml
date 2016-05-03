@@ -18,8 +18,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ZZPlayerDemoActivity">
-        </activity>
+        <activity
+            android:name=".ZZPlayerDemoActivity"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="singleTask"/>
 
     </application>
 

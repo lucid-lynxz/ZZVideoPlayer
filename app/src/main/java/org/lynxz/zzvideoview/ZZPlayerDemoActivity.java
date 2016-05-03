@@ -1,9 +1,7 @@
 package org.lynxz.zzvideoview;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Window;
@@ -11,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.lynxz.zzvideoview.controller.IPlayerImpl;
+import org.lynxz.zzvideoview.util.DensityUtil;
 import org.lynxz.zzvideoview.util.NetworkUtil;
 import org.lynxz.zzvideoview.widget.VideoPlayer;
 
@@ -59,6 +58,7 @@ public class ZZPlayerDemoActivity extends Activity {
             public void onError() {
 
             }
+
         };
 
         mVp.setPlayerController(playerImpl);
@@ -70,20 +70,40 @@ public class ZZPlayerDemoActivity extends Activity {
     }
 
     private void initView() {
-
         mVp = (VideoPlayer) findViewById(R.id.vp);
         mVp.setTitle("这是测试视频");
         mVp.loadAndStartVideo(mVideoUrl);
     }
 
-    private boolean isNetworkavailable() {
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        boolean connected = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            connected = true;
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        //TODO: 全屏模式
+        if (mVp == null) {
+            return;
         }
-        return connected;
+
+        //根据屏幕方向重新设置播放器的大小
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().getDecorView().invalidate();
+            float height = DensityUtil.getWidthInPx(this);
+            float width = DensityUtil.getHeightInPx(this);
+            mVp.getLayoutParams().height = (int) width;
+            mVp.getLayoutParams().width = (int) height;
+        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            final WindowManager.LayoutParams attrs = getWindow().getAttributes();
+            attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setAttributes(attrs);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            float width = DensityUtil.getWidthInPx(this);
+            float height = DensityUtil.dip2px(this, 211.f);
+            mVp.getLayoutParams().height = (int) height;
+            mVp.getLayoutParams().width = (int) width;
+        }
     }
 
 
