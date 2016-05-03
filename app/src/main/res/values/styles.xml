@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="NormalTextStyle">
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 </resources>

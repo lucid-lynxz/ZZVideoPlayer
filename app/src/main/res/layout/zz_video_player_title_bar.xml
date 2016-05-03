@@ -20,13 +20,11 @@
 
     <TextView
         android:id="@+id/tv_title"
+        style="@style/NormalTextStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/normal_margin"
         android:ellipsize="marquee"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="zz_player"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/normal_text_size"/>
+        android:text="zz_player"/>
 </LinearLayout>

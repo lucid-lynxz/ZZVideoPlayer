@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import org.lynxz.zzvideoview.R;
 import org.lynxz.zzvideoview.constant.VideoUriProtocol;
 import org.lynxz.zzvideoview.controller.IControllerImpl;
+import org.lynxz.zzvideoview.controller.IPlayerImpl;
 import org.lynxz.zzvideoview.controller.ITitleBarImpl;
 import org.lynxz.zzvideoview.util.DebugLog;
 
@@ -31,7 +32,9 @@ public class VideoPlayer extends RelativeLayout {
     private ITitleBarImpl mTitleBarImpl = new ITitleBarImpl() {
         @Override
         public void onBackClick() {
-
+            if (mIPlayerImpl != null) {
+                mIPlayerImpl.onBack();
+            }
         }
     };
 
@@ -41,6 +44,15 @@ public class VideoPlayer extends RelativeLayout {
 
         }
     };
+
+    /**
+     * 播放器控制功能对外开放接口,包括返回按钮,播放等...
+     */
+    public void setPlayerController(IPlayerImpl IPlayerImpl) {
+        mIPlayerImpl = IPlayerImpl;
+    }
+
+    private IPlayerImpl mIPlayerImpl = null;
 
     public VideoPlayer(Context context) {
         super(context);
@@ -70,6 +82,7 @@ public class VideoPlayer extends RelativeLayout {
         mController = (PlayerController) findViewById(R.id.pc_controller);
 
         mTitleBar.setTitleBarImpl(mTitleBarImpl);
+        mController.setControllerImpl(mControllerImpl);
     }
 
     /**
@@ -93,7 +106,6 @@ public class VideoPlayer extends RelativeLayout {
 
     public void pausePlay() {
         mVv.pause();
-
     }
 
     public void stopPlay() {

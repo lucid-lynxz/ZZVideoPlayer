@@ -4,7 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 import org.lynxz.zzvideoview.R;
 import org.lynxz.zzvideoview.controller.IControllerImpl;
@@ -12,7 +12,7 @@ import org.lynxz.zzvideoview.controller.IControllerImpl;
 /**
  * Created by zxz on 2016/4/28.
  */
-public class PlayerController extends RelativeLayout {
+public class PlayerController extends FrameLayout {
     private IControllerImpl mContrllerImpl;
 
     public PlayerController(Context context) {
@@ -40,6 +40,9 @@ public class PlayerController extends RelativeLayout {
         inflate(context, R.layout.zz_video_player_controller, this);
     }
 
+    /**
+     * 设置控制条功能回调
+     */
     public void setControllerImpl(IControllerImpl controllerImpl) {
         this.mContrllerImpl = controllerImpl;
     }

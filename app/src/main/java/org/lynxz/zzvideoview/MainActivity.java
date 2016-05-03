@@ -1,13 +1,16 @@
 package org.lynxz.zzvideoview;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import org.lynxz.zzvideoview.widget.VideoPlayer;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener {
 
     private VideoPlayer mVp;
     private String mVideoUrl;
@@ -21,14 +24,27 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         initView();
-
     }
 
     private void initView() {
-        mVideoUrl = "android.resource://" + getPackageName() + "/" + R.raw.shuai_dan_ge;
-        //        mVideoUrl = "http://7xt0mj.com2.z0.glb.clouddn.com/lianaidaren.v.640.480.mp4";
-        mVp = (VideoPlayer) findViewById(R.id.vp);
-        mVp.setTitle("这是测试视频");
-        mVp.loadAndStartVideo(mVideoUrl);
+        Button btnCustom = (Button) findViewById(R.id.btn_custom);
+
+        btnCustom.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        Intent intent = null;
+        switch (id) {
+            case R.id.btn_custom:
+                intent = new Intent(this, ZZPlayerDemoActivity.class);
+                break;
+        }
+
+        if (intent != null) {
+            startActivity(intent);
+        }
     }
 }
