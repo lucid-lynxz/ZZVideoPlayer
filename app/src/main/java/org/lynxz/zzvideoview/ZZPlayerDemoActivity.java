@@ -39,8 +39,8 @@ public class ZZPlayerDemoActivity extends Activity {
     }
 
     private void initData() {
-        mVideoUrl = "android.resource://" + getPackageName() + "/" + R.raw.shuai_dan_ge;
-        //        mVideoUrl = "http://7xt0mj.com2.z0.glb.clouddn.com/lianaidaren.v.640.480.mp4";
+        //        mVideoUrl = "android.resource://" + getPackageName() + "/" + R.raw.shuai_dan_ge;
+        mVideoUrl = "http://7xt0mj.com2.z0.glb.clouddn.com/lianaidaren.v.640.480.mp4";
     }
 
     private void initView() {

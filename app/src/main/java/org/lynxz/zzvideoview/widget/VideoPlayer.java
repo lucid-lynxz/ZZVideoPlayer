@@ -2,8 +2,11 @@ package org.lynxz.zzvideoview.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -13,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import org.lynxz.zzvideoview.R;
+import org.lynxz.zzvideoview.bean.PlayState;
 import org.lynxz.zzvideoview.constant.VideoUriProtocol;
 import org.lynxz.zzvideoview.controller.AnimationImpl;
 import org.lynxz.zzvideoview.controller.IControllerImpl;
@@ -21,6 +25,8 @@ import org.lynxz.zzvideoview.controller.ITitleBarImpl;
 import org.lynxz.zzvideoview.util.DebugLog;
 
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by zxz on 2016/4/28.
@@ -43,9 +49,16 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private Animation mExitFromBottom;
 
 
+    private int mDuration = 0;//视频长度
     private long mCurrentDownTime = 0;
     private long mLastDownTime = 0;
-    private static final int MIN_CLICK_INTERVAL = 500;//连续两次down事件最小时间间隔(ms)
+
+    private static final int MIN_CLICK_INTERVAL = 400;//连续两次down事件最小时间间隔(ms)
+    private static final int UPDATE_TIMER_INTERVAL = 1000;
+    private static final int MSG_UPDATE_PROGRESS_TIME = 1;//更新播放进度时间
+    private static final int MSG_AUTO_HIDE_BARS = 2;//隐藏标题栏和控制条
+
+    private Timer mUpdateTimer = null;
 
     private ITitleBarImpl mTitleBarImpl = new ITitleBarImpl() {
         @Override
@@ -59,6 +72,38 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private IControllerImpl mControllerImpl = new IControllerImpl() {
         @Override
         public void onPlayTurn() {
+
+        }
+    };
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int what = msg.what;
+            if (what == MSG_UPDATE_PROGRESS_TIME) {
+                mController.updateProgress(getCurrentTime(), getBufferProgress());
+            }
+        }
+    };
+
+    private MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            mDuration = mp.getDuration();
+            mController.updateProgress(0, 0, mDuration);
+        }
+    };
+
+    private MediaPlayer.OnErrorListener mErrorListener = new MediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            return true;
+        }
+    };
+    private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
 
         }
     };
@@ -100,12 +145,17 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mTitleBar = (PlayerTitleBar) findViewById(R.id.pt_title_bar);
         mController = (PlayerController) findViewById(R.id.pc_controller);
 
-        mVv.setOnTouchListener(this);
+        initAnimation();
 
         mTitleBar.setTitleBarImpl(mTitleBarImpl);
         mController.setControllerImpl(mControllerImpl);
 
-        initAnimation();
+        mVv.setOnTouchListener(this);
+        mVv.setOnPreparedListener(mPreparedListener);
+        mVv.setOnCompletionListener(mCompletionListener);
+        mVv.setOnErrorListener(mErrorListener);
+        resetUpdateTimer();
+
     }
 
     /**
@@ -165,6 +215,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     public void startPlay() {
         mVv.start();
+        mController.setPlayState(PlayState.PLAY);
     }
 
     public void pausePlay() {
@@ -271,16 +322,32 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         return false;
     }
 
-    //    @Override
-    //    public void onClick(View v) {
-    //        if (!isTouchEventValid()) {
-    //            return;
-    //        }
-    //
-    //        if (mController.getVisibility() == VISIBLE) {
-    //            showOrHideBars(false, true);
-    //        } else {
-    //            showOrHideBars(true, true);
-    //        }
-    //    }
+    private void resetUpdateTimer() {
+        stopUpdateTimer();
+        mUpdateTimer = new Timer();
+        mUpdateTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS_TIME);
+            }
+        }, 0, UPDATE_TIMER_INTERVAL);
+    }
+
+    private void stopUpdateTimer() {
+        if (mUpdateTimer != null) {
+            mUpdateTimer.cancel();
+            mUpdateTimer = null;
+        }
+    }
+
+    private int getCurrentTime() {
+        return mVv.getCurrentPosition();
+    }
+
+    /**
+     * @return 缓冲百分比 0-100
+     */
+    private int getBufferProgress() {
+        return mVv.getBufferPercentage();
+    }
 }

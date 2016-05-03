@@ -15,4 +15,8 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="SmallTextStyle" parent="NormalTextStyle">
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+
 </resources>

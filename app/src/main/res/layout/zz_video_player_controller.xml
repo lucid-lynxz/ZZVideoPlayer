@@ -11,16 +11,16 @@
         android:layout_height="@dimen/normal_bar_height"
         android:layout_alignParentBottom="true"
         android:background="@color/light_gray"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/normal_margin"
-        android:paddingRight="@dimen/normal_margin">
+        android:orientation="horizontal">
 
 
         <RelativeLayout
             android:id="@+id/rl_play_pause"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/normal_margin"
+            android:paddingRight="@dimen/normal_margin">
 
             <ImageView
                 android:id="@+id/iv_play_pause"
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/tv_current_time"
-            style="@style/NormalTextStyle"
+            style="@style/SmallTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/normal_margin"
@@ -40,6 +40,7 @@
             android:text="00:00"/>
 
         <org.lynxz.zzvideoview.widget.CustomSeekBar
+            android:id="@+id/csb"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -47,7 +48,7 @@
 
         <TextView
             android:id="@+id/tv_total_time"
-            style="@style/NormalTextStyle"
+            style="@style/SmallTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/normal_margin"
@@ -55,9 +56,12 @@
             android:text="00:00"/>
 
         <RelativeLayout
+            android:id="@+id/rl_toggle_expandable"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center">
+            android:gravity="center"
+            android:paddingLeft="@dimen/normal_margin"
+            android:paddingRight="@dimen/normal_margin">
 
             <ImageView
                 android:id="@+id/iv_toggle_expandable"
