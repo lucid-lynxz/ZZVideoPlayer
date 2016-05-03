@@ -49,11 +49,6 @@ public class PlayerTitleBar extends LinearLayout implements View.OnClickListener
         rlBack.setOnClickListener(this);
     }
 
-
-    public void showOrHideTtitleBar(boolean show) {
-        setVisibility(show ? VISIBLE : GONE);
-    }
-
     public void setTitle(String title) {
         if (!TextUtils.isEmpty(title)) {
             mTvTitle.setText(title);
