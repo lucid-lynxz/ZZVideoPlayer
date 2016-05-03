@@ -33,6 +33,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     private int mDuration = 0;//视频长度(ms)
     private SimpleDateFormat mFormatter = null;
     private static final String ZERO_TIME = "00:00";
+    private int mCurrentPlayState = PlayState.IDLE;//当前播放状态
 
     public PlayerController(Context context) {
         super(context);
@@ -82,7 +83,14 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
+        if (mContrllerImpl == null) {
+            return;
+        }
 
+        int id = v.getId();
+        if (id == R.id.rl_play_pause) {
+            mContrllerImpl.onPlayTurn();
+        }
     }
 
     @Override
@@ -105,12 +113,15 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
      *
      * @param curPlayState 参考 {@link PlayState}
      */
-    public void setPlayState(String curPlayState) {
-        if (PlayState.PLAY.equalsIgnoreCase(curPlayState)) {
+    public void setPlayState(int curPlayState) {
+        mCurrentPlayState = curPlayState;
+        if (PlayState.PLAY == curPlayState) {
             mIvPlayPause.setImageResource(R.drawable.zz_player_pause);
-        } else if (PlayState.PAUSE.equalsIgnoreCase(curPlayState)) {
+        } else if (PlayState.PAUSE == curPlayState) {
             mIvPlayPause.setImageResource(R.drawable.zz_player_play);
-        } else if (PlayState.ERROR.equalsIgnoreCase(curPlayState)) {
+        } else if (PlayState.STOP == curPlayState) {
+            mIvPlayPause.setImageResource(R.drawable.zz_player_play);
+        } else if (PlayState.ERROR == curPlayState) {
             mIvPlayPause.setImageResource(R.drawable.zz_player_play);
         }
     }
@@ -132,8 +143,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
      */
     public void updateProgress(int progress, int secondProgress, int maxValue) {
         mDuration = maxValue;
-        mCsb.setProgress(progress);
-        mCsb.setSecondaryProgress(secondProgress * maxValue / 100);
         mCsb.setMax(maxValue);
 
         // 更新播放时间信息
@@ -145,9 +154,13 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
             }
             mFormatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
         }
-
         mTvTotalTime.setText(formatPlayTime(maxValue));
-        mTvCurrentTime.setText(formatPlayTime(progress));
+
+        if (mCurrentPlayState == PlayState.PLAY || mCurrentPlayState == PlayState.PAUSE) {
+            mCsb.setProgress(progress);
+            mCsb.setSecondaryProgress(secondProgress * maxValue / 100);
+            mTvCurrentTime.setText(formatPlayTime(progress));
+        }
     }
 
     @SuppressLint("SimpleDateFormat")

@@ -109,15 +109,14 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
-
+            mController.setPlayState(PlayState.STOP);
+            mController.updateProgress(0, 0);
         }
     };
     private MediaPlayer.OnInfoListener mInfoListener = new MediaPlayer.OnInfoListener() {
         @Override
         public boolean onInfo(MediaPlayer mp, int what, int extra) {
-            //  初始自动隐藏标题栏和控制栏
-            mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
-            mHandler.sendEmptyMessageDelayed(MSG_AUTO_HIDE_BARS, TIME_AUTO_HIDE_BARS_DELAY);
+            sendAutoHideBarsMsg();
             return false;
         }
     };

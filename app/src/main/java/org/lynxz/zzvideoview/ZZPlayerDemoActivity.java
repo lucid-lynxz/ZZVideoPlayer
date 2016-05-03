@@ -33,6 +33,16 @@ public class ZZPlayerDemoActivity extends Activity {
             public void onBack() {
                 finish();
             }
+
+            @Override
+            public void onComplete() {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
         };
 
         mVp.setPlayerController(playerImpl);
