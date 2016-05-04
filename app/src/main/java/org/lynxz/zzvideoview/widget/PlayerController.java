@@ -16,6 +16,7 @@ import org.lynxz.zzvideoview.R;
 import org.lynxz.zzvideoview.constant.PlayState;
 import org.lynxz.zzvideoview.constant.SeekBarState;
 import org.lynxz.zzvideoview.controller.IControllerImpl;
+import org.lynxz.zzvideoview.util.OrientationUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -139,6 +140,24 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     }
 
     /**
+     * 屏幕方向改变时,回调该方法
+     *
+     * @param orientation 新屏幕方向:<br>
+     *                    <ol>
+     *                    <li>{@link OrientationUtil#HORIZONTAL HORIZONTAL}</li>
+     *                    <li>{@link OrientationUtil#VERTICAL VERTICAL}</li>
+     *                    </ol>
+     */
+    public void setOrientation(int orientation) {
+        //更新全屏图标
+        if (orientation == OrientationUtil.HORIZONTAL) {
+            mIvToggleExpandable.setImageResource(R.drawable.zz_player_shrink);
+        } else {
+            mIvToggleExpandable.setImageResource(R.drawable.zz_player_expand);
+        }
+    }
+
+    /**
      * 更新播放进度
      * 参考 {@link #updateProgress(int, int, int)}
      */
@@ -202,4 +221,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
         }
         return timeStr;
     }
+
+
 }

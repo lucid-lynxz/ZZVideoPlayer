@@ -24,6 +24,7 @@ import org.lynxz.zzvideoview.controller.IControllerImpl;
 import org.lynxz.zzvideoview.controller.IPlayerImpl;
 import org.lynxz.zzvideoview.controller.ITitleBarImpl;
 import org.lynxz.zzvideoview.util.DebugLog;
+import org.lynxz.zzvideoview.util.OrientationUtil;
 
 import java.util.Calendar;
 import java.util.Timer;
@@ -427,5 +428,23 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         //  初始自动隐藏标题栏和控制栏
         mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
         mHandler.sendEmptyMessageDelayed(MSG_AUTO_HIDE_BARS, TIME_AUTO_HIDE_BARS_DELAY);
+    }
+
+    /**
+     * 屏幕方向改变时,回调该方法
+     *
+     * @param orientation 新屏幕方向:<br>
+     *                    <ol>
+     *                    <li>{@link OrientationUtil#HORIZONTAL HORIZONTAL}</li>
+     *                    <li>{@link OrientationUtil#VERTICAL VERTICAL}</li>
+     *                    </ol>
+     */
+    public void updateActivityOrientation(int orientation) {
+        //需要强制显示再隐藏控制条,不然若切换为横屏时控制条是隐藏的,首次触摸显示时,会显示在200dp的位置
+        forceShowOrHideBars(true);
+        sendAutoHideBarsMsg();
+
+        //更新全屏图标
+        mController.setOrientation(orientation);
     }
 }

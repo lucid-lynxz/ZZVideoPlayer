@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import org.lynxz.zzvideoview.util.OrientationUtil;
 import org.lynxz.zzvideoview.controller.IPlayerImpl;
 import org.lynxz.zzvideoview.util.DensityUtil;
 import org.lynxz.zzvideoview.util.NetworkUtil;
@@ -86,7 +87,8 @@ public class ZZPlayerDemoActivity extends Activity {
         }
 
         //根据屏幕方向重新设置播放器的大小
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        int orientation = OrientationUtil.getOrientation(this);
+        if (orientation == OrientationUtil.HORIZONTAL) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getWindow().getDecorView().invalidate();
@@ -94,16 +96,17 @@ public class ZZPlayerDemoActivity extends Activity {
             float width = DensityUtil.getHeightInPx(this);
             mVp.getLayoutParams().height = (int) width;
             mVp.getLayoutParams().width = (int) height;
-        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else {
             final WindowManager.LayoutParams attrs = getWindow().getAttributes();
             attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getWindow().setAttributes(attrs);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             float width = DensityUtil.getWidthInPx(this);
-            float height = DensityUtil.dip2px(this, 211.f);
+            float height = DensityUtil.dip2px(this, 200f);
             mVp.getLayoutParams().height = (int) height;
             mVp.getLayoutParams().width = (int) width;
         }
+        mVp.updateActivityOrientation(orientation);
     }
 
 
