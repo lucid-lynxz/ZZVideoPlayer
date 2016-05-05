@@ -117,6 +117,11 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                     break;
             }
         }
+
+        @Override
+        public void onOrientationChange() {
+            mIPlayerImpl.changeOrientation();
+        }
     };
 
     private Handler mHandler = new Handler() {

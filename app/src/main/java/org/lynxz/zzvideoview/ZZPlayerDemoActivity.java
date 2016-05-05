@@ -33,35 +33,39 @@ public class ZZPlayerDemoActivity extends Activity {
 
     }
 
+    private IPlayerImpl playerImpl = new IPlayerImpl() {
+        @Override
+        public boolean isNetworkAvailable() {
+            return NetworkUtil.isNetworkAvailable(ZZPlayerDemoActivity.this);
+        }
+
+        @Override
+        public void onNetWorkError() {
+            showToast(null);
+        }
+
+        @Override
+        public void onBack() {
+            finish();
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+
+        @Override
+        public void onError() {
+
+        }
+
+        @Override
+        public void changeOrientation() {
+
+        }
+    };
+
     private void initListener() {
-        IPlayerImpl playerImpl = new IPlayerImpl() {
-            @Override
-            public boolean isNetworkAvailable() {
-                return NetworkUtil.isNetworkAvailable(ZZPlayerDemoActivity.this);
-            }
-
-            @Override
-            public void onNetWorkError() {
-                showToast(null);
-            }
-
-            @Override
-            public void onBack() {
-                finish();
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-
-            @Override
-            public void onError() {
-
-            }
-
-        };
-
         mVp.setPlayerController(playerImpl);
     }
 
@@ -74,6 +78,7 @@ public class ZZPlayerDemoActivity extends Activity {
         mVp = (VideoPlayer) findViewById(R.id.vp);
         mVp.setTitle("这是测试视频");
         mVp.loadAndStartVideo(mVideoUrl);
+        //        OrientationUtil.forceOrientation(this, OrientationUtil.HORIZONTAL);
     }
 
 

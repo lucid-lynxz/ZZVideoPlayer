@@ -31,4 +31,9 @@ public interface IPlayerImpl {
      */
     void onError();
 
+    /**
+     * 播放器强制要求旋转屏幕
+     */
+    void changeOrientation();
+
 }

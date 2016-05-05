@@ -11,11 +11,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8189cfb9-1b08-4dea-ace8-5613aafeaeaf" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/OrientationUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/ZZPlayerDemoActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/ZZPlayerDemoActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IControllerImpl.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IControllerImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IPlayerImpl.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IPlayerImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/OrientationUtil.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/OrientationUtil.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/PlayerController.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/PlayerController.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/VideoPlayer.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/VideoPlayer.java" />
     </list>
@@ -68,49 +68,32 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ZZPlayerDemoActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ZZPlayerDemoActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/ZZPlayerDemoActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="108" column="28" selection-start-line="108" selection-start-column="28" selection-end-line="108" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.48995364">
+              <caret line="69" column="5" selection-start-line="69" selection-start-column="5" selection-end-line="69" selection-end-column="5" />
               <folding>
-                <element signature="e#3617#3667#0" expanded="true" />
+                <element signature="e#1693#1694#0" expanded="true" />
+                <element signature="e#1744#1745#0" expanded="true" />
+                <element signature="e#3702#3752#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VideoPlayer.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="VideoPlayer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/VideoPlayer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6615385">
-              <caret line="447" column="48" selection-start-line="447" selection-start-column="48" selection-end-line="447" selection-end-column="48" />
+            <state vertical-scroll-proportion="-5.0625">
+              <caret line="174" column="27" selection-start-line="174" selection-start-column="27" selection-end-line="174" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#4020#4021#0" expanded="true" />
+                <element signature="e#4076#4077#0" expanded="true" />
+                <element signature="e#5826#5827#0" expanded="true" />
+                <element signature="e#5868#5869#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="zz_video_player.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/zz_video_player.xml">
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.4444447">
-              <caret line="19" column="41" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="41" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PlayState.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/constant/PlayState.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -119,7 +102,17 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/PlayerController.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="143" column="6" selection-start-line="143" selection-start-column="6" selection-end-line="143" selection-end-column="6" />
+              <caret line="99" column="39" selection-start-line="99" selection-start-column="32" selection-end-line="99" selection-end-column="51" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IControllerImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IControllerImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="20" column="28" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -1808,18 +1801,19 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/ISeekBarImpl.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/constant/PlayState.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IPlayerImpl.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/constant/SeekbarState.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/constant/SeekBarState.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/DensityUtil.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IControllerImpl.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/ScreenUtil.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/constant/Orientation.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/Orientation.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/ZZPlayerDemoActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IControllerImpl.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/PlayerController.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IPlayerImpl.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/OrientationUtil.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/VideoPlayer.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/ZZPlayerDemoActivity.java" />
       </list>
     </option>
   </component>
@@ -2406,8 +2400,8 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937685" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39070228" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32937685" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39070228" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39960435" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
@@ -2449,18 +2443,24 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/ZZPlayerDemoActivity.java</url>
-          <line>81</line>
+          <line>86</line>
           <properties />
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/VideoPlayer.java</url>
-          <line>318</line>
+          <line>323</line>
           <properties />
           <option name="timeStamp" value="13" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/OrientationUtil.java</url>
+          <line>38</line>
+          <properties />
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="16" />
+      <option name="time" value="17" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -2479,6 +2479,10 @@
           <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#4020#4021#0" expanded="true" />
+            <element signature="e#4076#4077#0" expanded="true" />
+            <element signature="e#5826#5827#0" expanded="true" />
+            <element signature="e#5868#5869#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2508,6 +2512,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.37403402">
           <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#1012#1013#0" expanded="false" />
+            <element signature="e#1044#1045#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2522,14 +2531,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.40030912">
           <caret line="5112" column="61" selection-start-line="5112" selection-start-column="61" selection-end-line="5112" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/ProgramFiles/AndroidSDK/sources/android-23/android/app/Activity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33230293">
-          <caret line="899" column="19" selection-start-line="899" selection-start-column="19" selection-end-line="899" selection-end-column="19" />
           <folding />
         </state>
       </provider>
@@ -2784,22 +2785,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IControllerImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15042736">
-          <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IPlayerImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.03760684">
-          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6119134">
@@ -2824,13 +2809,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/OrientationUtil.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IPlayerImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.62393165">
-          <caret line="22" column="37" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
+          <caret line="35" column="7" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/ProgramFiles/AndroidSDK/sources/android-23/android/app/Activity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.25694445">
+          <caret line="5129" column="7" selection-start-line="5129" selection-start-column="7" selection-end-line="5129" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/util/OrientationUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32307693">
+          <caret line="38" column="56" selection-start-line="38" selection-start-column="56" selection-end-line="38" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/constant/PlayState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.22564103">
+          <caret line="6" column="24" selection-start-line="6" selection-start-column="24" selection-end-line="6" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2839,26 +2848,8 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.4444447">
+        <state vertical-scroll-proportion="0.5363985">
           <caret line="19" column="41" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/ZZPlayerDemoActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="108" column="28" selection-start-line="108" selection-start-column="28" selection-end-line="108" selection-end-column="28" />
-          <folding>
-            <element signature="e#3617#3667#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/constant/PlayState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -2866,17 +2857,41 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/PlayerController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="143" column="6" selection-start-line="143" selection-start-column="6" selection-end-line="143" selection-end-column="6" />
+          <caret line="99" column="39" selection-start-line="99" selection-start-column="32" selection-end-line="99" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/controller/IControllerImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="28" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="28" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/widget/VideoPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6615385">
-          <caret line="447" column="48" selection-start-line="447" selection-start-column="48" selection-end-line="447" selection-end-column="48" />
+        <state vertical-scroll-proportion="-5.0625">
+          <caret line="174" column="27" selection-start-line="174" selection-start-column="27" selection-end-line="174" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#4020#4021#0" expanded="true" />
+            <element signature="e#4076#4077#0" expanded="true" />
+            <element signature="e#5826#5827#0" expanded="true" />
+            <element signature="e#5868#5869#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/lynxz/zzvideoview/ZZPlayerDemoActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.48995364">
+          <caret line="69" column="5" selection-start-line="69" selection-start-column="5" selection-end-line="69" selection-end-column="5" />
+          <folding>
+            <element signature="e#1693#1694#0" expanded="true" />
+            <element signature="e#1744#1745#0" expanded="true" />
+            <element signature="e#3702#3752#0" expanded="true" />
           </folding>
         </state>
       </provider>
