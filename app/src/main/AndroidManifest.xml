@@ -21,7 +21,8 @@
         <activity
             android:name=".ZZPlayerDemoActivity"
             android:configChanges="keyboard|orientation|screenSize"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
 
     </application>
 

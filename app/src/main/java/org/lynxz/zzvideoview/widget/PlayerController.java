@@ -97,6 +97,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
                 mControllerImpl.onPlayTurn();
                 break;
             case R.id.iv_toggle_expandable:
+            case R.id.rl_toggle_expandable:
                 mControllerImpl.onOrientationChange();
                 break;
         }

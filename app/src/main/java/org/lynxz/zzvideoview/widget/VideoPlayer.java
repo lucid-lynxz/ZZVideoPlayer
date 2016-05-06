@@ -1,6 +1,7 @@
 package org.lynxz.zzvideoview.widget;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import org.lynxz.zzvideoview.R;
+import org.lynxz.zzvideoview.ZZPlayerDemoActivity;
 import org.lynxz.zzvideoview.constant.PlayState;
 import org.lynxz.zzvideoview.constant.SeekBarState;
 import org.lynxz.zzvideoview.constant.VideoUriProtocol;
@@ -24,8 +26,11 @@ import org.lynxz.zzvideoview.controller.IControllerImpl;
 import org.lynxz.zzvideoview.controller.IPlayerImpl;
 import org.lynxz.zzvideoview.controller.ITitleBarImpl;
 import org.lynxz.zzvideoview.util.DebugLog;
+import org.lynxz.zzvideoview.util.DensityUtil;
+import org.lynxz.zzvideoview.util.NetworkUtil;
 import org.lynxz.zzvideoview.util.OrientationUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -71,6 +76,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         public void onBackClick() {
             if (mIPlayerImpl != null) {
                 mIPlayerImpl.onBack();
+            } else {
+                mHostActivity.get().finish();
             }
         }
     };
@@ -79,7 +86,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         @Override
         public void onPlayTurn() {
             //网络不正常时,不允许切换 TODO: 本地视频则跳过这一步
-            if (!mIPlayerImpl.isNetworkAvailable()) {
+            if (!NetworkUtil.isNetworkAvailable(mHostActivity.get())) {
                 mIPlayerImpl.onNetWorkError();
                 return;
             }
@@ -120,7 +127,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
         @Override
         public void onOrientationChange() {
-            mIPlayerImpl.changeOrientation();
+            //            mIPlayerImpl.changeOrientation();
+            OrientationUtil.changeOrientation(mHostActivity.get());
         }
     };
 
@@ -168,6 +176,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             return false;
         }
     };
+    private WeakReference<Activity> mHostActivity;
 
     /**
      * 播放器控制功能对外开放接口,包括返回按钮,播放等...
@@ -298,17 +307,19 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      * @param path
      * @return 设置成功返回 true
      */
-    public void setVideoUri(@NonNull String path) {
+    public void setVideoUri(@NonNull Activity act, @NonNull String path) {
+        mHostActivity = new WeakReference<Activity>(act);
         mVideoUri = Uri.parse(path);
         mVideoProtocol = mVideoUri.getScheme();
         DebugLog.i(TAG, "setVideoUri path = " + path + " mVideoProtocol = " + mVideoProtocol);
     }
 
-    public void loadAndStartVideo(@NonNull String path) {
-        setVideoUri(path);
+    public void loadAndStartVideo(@NonNull Activity act, @NonNull String path) {
+        setVideoUri(act, path);
         load();
         startPlay();
     }
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -444,7 +455,22 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      *                    <li>{@link OrientationUtil#VERTICAL VERTICAL}</li>
      *                    </ol>
      */
-    public void updateActivityOrientation(int orientation) {
+    public void updateActivityOrientation() {
+        int orientation = OrientationUtil.getOrientation(mHostActivity.get());
+
+        //更新播放器宽高
+        float width = DensityUtil.getWidthInPx(mHostActivity.get());
+        float height = DensityUtil.getHeightInPx(mHostActivity.get());
+        if (orientation == OrientationUtil.HORIZONTAL) {
+            getLayoutParams().height = (int) height;
+            getLayoutParams().width = (int) width;
+        } else {
+            width = DensityUtil.getWidthInPx(mHostActivity.get());
+            height = DensityUtil.dip2px(mHostActivity.get(), 200f);
+        }
+        getLayoutParams().height = (int) height;
+        getLayoutParams().width = (int) width;
+
         //需要强制显示再隐藏控制条,不然若切换为横屏时控制条是隐藏的,首次触摸显示时,会显示在200dp的位置
         forceShowOrHideBars(true);
         sendAutoHideBarsMsg();

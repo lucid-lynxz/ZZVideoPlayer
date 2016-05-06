@@ -3,37 +3,36 @@ package org.lynxz.zzvideoview.controller;
 /**
  * Created by zxz on 2016/5/3.
  */
-public interface IPlayerImpl {
+public abstract class IPlayerImpl {
 
-    /**
-     * 获取当前当前网络状态
-     * return true-有网络
-     */
-    boolean isNetworkAvailable();
 
     /**
      * 网络异常时处理
      */
-    void onNetWorkError();
+    public void onNetWorkError() {
+
+    }
 
     /**
      * 标题栏返回按钮功能
      */
-    void onBack();
+    public void onBack() {
+
+    }
 
     /**
      * 播放结束后
      */
-    void onComplete();
+    public void onComplete() {
+
+    }
 
     /**
      * 播放发生异常
      */
-    void onError();
+    public void onError() {
 
-    /**
-     * 播放器强制要求旋转屏幕
-     */
-    void changeOrientation();
+    }
+
 
 }
