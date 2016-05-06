@@ -1,8 +1,9 @@
 # 简易视频播放器
-
 封装了系统VideoView,主要进行了网络异常处理以及进度条拖动功能
+![播放器](http://upload-images.jianshu.io/upload_images/947286-23980d03f5efbf87.gif?imageMogr2/auto-orient/strip)
 
 ## 使用
+
 ### 播放网络视频添加权限
 ```xml
 <uses-permission android:name="android.permission.INTERNET"/>
