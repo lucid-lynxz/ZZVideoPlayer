@@ -80,3 +80,19 @@ public void onConfigurationChanged(Configuration newConfig) {
     }
 }
 ```
+
+### 设置页面在onResume时重新从上次中断位置继续播放
+```java
+
+@Override
+protected void onResume() {
+    super.onResume();
+    mVp.onHostResume();
+}
+
+@Override
+protected void onPause() {
+    super.onPause();
+    mVp.onHostPause();
+}
+```

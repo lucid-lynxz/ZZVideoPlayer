@@ -56,8 +56,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
 
     private int mDuration = 0;//视频长度
-    private long mCurrentDownTime = 0;
-    private long mLastDownTime = 0;
+    private long mCurrentDownTime = 0;//当前action_down时的时间值
+    private long mLastDownTime = 0;//上次action_down的时间值，防止快速触摸多次触发
     private int mCurrentPlayState = PlayState.IDLE;
     private int mNetworkState = -1;//0-无网络
 
@@ -69,6 +69,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private static final int MSG_AUTO_HIDE_BARS = 2;//隐藏标题栏和控制条
 
     private Timer mUpdateTimer = null;
+
+    private WeakReference<Activity> mHostActivity;
+    private int mLastPlayingPos = 0;//onPause时的播放位置
 
     private ITitleBarImpl mTitleBarImpl = new ITitleBarImpl() {
         @Override
@@ -131,13 +134,16 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         }
     };
 
+    public int mLastUpdateTime = 0;//上一次updateTimer更新的播放时间值
     private Handler mHandler = new Handler() {
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             int what = msg.what;
             if (what == MSG_UPDATE_PROGRESS_TIME) {
                 mController.updateProgress(getCurrentTime(), getBufferProgress());
+                mLastPlayingPos = 0;
             } else if (what == MSG_AUTO_HIDE_BARS) {
                 animateShowOrHideBars(false);
             }
@@ -175,7 +181,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             return false;
         }
     };
-    private WeakReference<Activity> mHostActivity;
 
     /**
      * 播放器控制功能对外开放接口,包括返回按钮,播放等...
@@ -413,7 +418,13 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mUpdateTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                //                int currentUpdateTime = getCurrentTime();
+                //                if (currentUpdateTime - mLastUpdateTime >= 800) {
                 mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS_TIME);
+                //                    mLastUpdateTime = currentUpdateTime;
+                //                    mLastPlayingPos = 0;
+                //                }
+
             }
         }, 0, UPDATE_TIMER_INTERVAL);
     }
@@ -476,5 +487,28 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
         //更新全屏图标
         mController.setOrientation(orientation);
+    }
+
+    /**
+     * TODO： 宿主页面onPause的时候记录播放位置，好在onResume的时候从中断点继续播放
+     */
+    public void onHostPause() {
+        mLastPlayingPos = getCurrentTime();
+        stopUpdateTimer();
+        // 在这里不进行stop或者pause播放的行为，因为特殊情况下会导致出现
+    }
+
+    /**
+     * 宿主页面onResume的时候从上次播放位置继续播放
+     */
+    public void onHostResume() {
+        if (mLastPlayingPos > 0) {
+            startPlay();
+            mVv.seekTo(mLastPlayingPos);
+            resetUpdateTimer();
+
+            //TODO: 修改为在播放成功后再置位
+            mLastPlayingPos = 0;
+        }
     }
 }

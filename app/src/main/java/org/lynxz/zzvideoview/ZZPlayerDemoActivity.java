@@ -78,4 +78,16 @@ public class ZZPlayerDemoActivity extends Activity {
         }
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mVp.onHostResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mVp.onHostPause();
+    }
 }
