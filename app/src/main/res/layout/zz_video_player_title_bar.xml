@@ -3,14 +3,15 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@drawable/zz_video_player_bar_bg"
-              android:orientation="horizontal"
-              android:paddingLeft="@dimen/normal_margin">
+              android:orientation="horizontal">
 
     <RelativeLayout
         android:id="@+id/rl_back"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -24,7 +25,6 @@
         style="@style/NormalTextStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/normal_margin"
         android:ellipsize="marquee"
         android:gravity="center_vertical"
         android:text="zz_player"/>
