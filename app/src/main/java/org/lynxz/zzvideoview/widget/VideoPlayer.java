@@ -129,7 +129,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
         @Override
         public void onOrientationChange() {
-            //            mIPlayerImpl.changeOrientation();
             OrientationUtil.changeOrientation(mHostActivity.get());
         }
     };
@@ -143,7 +142,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             int what = msg.what;
             if (what == MSG_UPDATE_PROGRESS_TIME) {
                 mController.updateProgress(getCurrentTime(), getBufferProgress());
-                mLastPlayingPos = 0;
             } else if (what == MSG_AUTO_HIDE_BARS) {
                 animateShowOrHideBars(false);
             }
@@ -418,12 +416,12 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mUpdateTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                //                int currentUpdateTime = getCurrentTime();
-                //                if (currentUpdateTime - mLastUpdateTime >= 800) {
-                mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS_TIME);
-                //                    mLastUpdateTime = currentUpdateTime;
-                //                    mLastPlayingPos = 0;
-                //                }
+                int currentUpdateTime = getCurrentTime();
+                if (currentUpdateTime - mLastUpdateTime >= 800) {
+                    mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS_TIME);
+                    mLastUpdateTime = currentUpdateTime;
+                    mLastPlayingPos = 0;
+                }
 
             }
         }, 0, UPDATE_TIMER_INTERVAL);
@@ -434,6 +432,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             mUpdateTimer.cancel();
             mUpdateTimer = null;
         }
+        mLastUpdateTime = 0;
     }
 
     private int getCurrentTime() {
@@ -458,12 +457,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /**
      * 屏幕方向改变时,回调该方法
-     *
-     * @param orientation 新屏幕方向:<br>
-     *                    <ol>
-     *                    <li>{@link OrientationUtil#HORIZONTAL HORIZONTAL}</li>
-     *                    <li>{@link OrientationUtil#VERTICAL VERTICAL}</li>
-     *                    </ol>
      */
     public void updateActivityOrientation() {
         int orientation = OrientationUtil.getOrientation(mHostActivity.get());
@@ -495,7 +488,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     public void onHostPause() {
         mLastPlayingPos = getCurrentTime();
         stopUpdateTimer();
-        // 在这里不进行stop或者pause播放的行为，因为特殊情况下会导致出现
+        // 在这里不进行stop或者pause播放的行为，因为特殊情况下会导致ANR出现
     }
 
     /**
@@ -506,9 +499,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             startPlay();
             mVv.seekTo(mLastPlayingPos);
             resetUpdateTimer();
-
-            //TODO: 修改为在播放成功后再置位
-            mLastPlayingPos = 0;
         }
     }
 }
