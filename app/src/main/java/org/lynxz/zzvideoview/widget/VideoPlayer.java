@@ -152,7 +152,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         @Override
         public void onPrepared(MediaPlayer mp) {
             mDuration = mp.getDuration();
-            mController.updateProgress(0, 0, mDuration);
+            mController.updateProgress(mLastUpdateTime, 0, mDuration);
             sendAutoHideBarsMsg();
         }
     };
@@ -417,7 +417,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             @Override
             public void run() {
                 int currentUpdateTime = getCurrentTime();
-                if (currentUpdateTime - mLastUpdateTime >= 800) {
+
+                if (currentUpdateTime >= 1000 && Math.abs(currentUpdateTime - mLastUpdateTime) >= 800) {
                     mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS_TIME);
                     mLastUpdateTime = currentUpdateTime;
                     mLastPlayingPos = 0;
@@ -432,7 +433,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             mUpdateTimer.cancel();
             mUpdateTimer = null;
         }
-        mLastUpdateTime = 0;
     }
 
     private int getCurrentTime() {
@@ -488,6 +488,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     public void onHostPause() {
         mLastPlayingPos = getCurrentTime();
         stopUpdateTimer();
+        mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
         // 在这里不进行stop或者pause播放的行为，因为特殊情况下会导致ANR出现
     }
 
@@ -496,9 +497,14 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      */
     public void onHostResume() {
         if (mLastPlayingPos > 0) {
+            // 进度条更新为上次播放时间
             startPlay();
             mVv.seekTo(mLastPlayingPos);
             resetUpdateTimer();
         }
+
+        //强制弹出标题栏和控制栏
+        forceShowOrHideBars(true);
+        sendAutoHideBarsMsg();
     }
 }
