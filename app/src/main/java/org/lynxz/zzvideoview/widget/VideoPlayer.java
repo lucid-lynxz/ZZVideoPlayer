@@ -17,7 +17,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import org.lynxz.zzvideoview.R;
-import org.lynxz.zzvideoview.ZZPlayerDemoActivity;
 import org.lynxz.zzvideoview.constant.PlayState;
 import org.lynxz.zzvideoview.constant.SeekBarState;
 import org.lynxz.zzvideoview.constant.VideoUriProtocol;
