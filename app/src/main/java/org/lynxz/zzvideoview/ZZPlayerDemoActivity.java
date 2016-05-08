@@ -39,8 +39,10 @@ public class ZZPlayerDemoActivity extends Activity {
 
         @Override
         public void onBack() {
+            mVp.onHostDestroy();
             finish();
         }
+
 
         @Override
         public void onError() {
@@ -89,5 +91,11 @@ public class ZZPlayerDemoActivity extends Activity {
     protected void onPause() {
         super.onPause();
         mVp.onHostPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        mVp.onHostDestroy();
+        finish();
     }
 }

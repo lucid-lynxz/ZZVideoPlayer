@@ -67,10 +67,10 @@ public class OrientationUtil {
      * @param act
      */
     public static void changeOrientation(Activity act) {
-        int tagetOrientation = VERTICAL;
+        int targetOrientation = VERTICAL;
         if (getOrientation(act) == VERTICAL) {
-            tagetOrientation = HORIZONTAL;
+            targetOrientation = HORIZONTAL;
         }
-        forceOrientation(act, tagetOrientation);
+        forceOrientation(act, targetOrientation);
     }
 }

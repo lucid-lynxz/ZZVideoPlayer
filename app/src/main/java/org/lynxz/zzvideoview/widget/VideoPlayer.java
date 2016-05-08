@@ -87,8 +87,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private IControllerImpl mControllerImpl = new IControllerImpl() {
         @Override
         public void onPlayTurn() {
-            //网络不正常时,不允许切换 TODO: 本地视频则跳过这一步
-            if (!NetworkUtil.isNetworkAvailable(mHostActivity.get())) {
+            //网络不正常时,不允许切换,本地视频则跳过这一步
+            if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol) && !NetworkUtil.isNetworkAvailable(mHostActivity.get())) {
                 mIPlayerImpl.onNetWorkError();
                 return;
             }
@@ -483,16 +483,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     }
 
     /**
-     * TODO： 宿主页面onPause的时候记录播放位置，好在onResume的时候从中断点继续播放
-     */
-    public void onHostPause() {
-        mLastPlayingPos = getCurrentTime();
-        stopUpdateTimer();
-        mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
-        // 在这里不进行stop或者pause播放的行为，因为特殊情况下会导致ANR出现
-    }
-
-    /**
      * 宿主页面onResume的时候从上次播放位置继续播放
      */
     public void onHostResume() {
@@ -506,5 +496,22 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         //强制弹出标题栏和控制栏
         forceShowOrHideBars(true);
         sendAutoHideBarsMsg();
+    }
+
+    /**
+     * 宿主页面onPause的时候记录播放位置，好在onResume的时候从中断点继续播放
+     */
+    public void onHostPause() {
+        mLastPlayingPos = getCurrentTime();
+        stopUpdateTimer();
+        mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
+        // 在这里不进行stop或者pause播放的行为，因为特殊情况下会导致ANR出现
+    }
+
+    /**
+     * 宿主页面destroy的时候页面恢复成竖直状态
+     */
+    public void onHostDestroy() {
+        OrientationUtil.forceOrientation(mHostActivity.get(), OrientationUtil.VERTICAL);
     }
 }
