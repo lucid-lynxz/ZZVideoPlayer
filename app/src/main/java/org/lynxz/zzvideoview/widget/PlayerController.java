@@ -219,6 +219,9 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
             return ZERO_TIME;
         }
 
+        if (mFormatter == null) {
+            initFormatter(mDuration);
+        }
         String timeStr = mFormatter.format(new Date(time));
         if (TextUtils.isEmpty(timeStr)) {
             timeStr = ZERO_TIME;
@@ -226,5 +229,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
         return timeStr;
     }
 
-
+    public void updateNetworkState(boolean isAvailable) {
+        mCsb.setSeekable(isAvailable);
+    }
 }

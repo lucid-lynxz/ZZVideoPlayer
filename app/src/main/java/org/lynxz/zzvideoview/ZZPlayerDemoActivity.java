@@ -43,7 +43,6 @@ public class ZZPlayerDemoActivity extends Activity {
             finish();
         }
 
-
         @Override
         public void onError() {
         }

@@ -2,18 +2,24 @@ package org.lynxz.zzvideoview.widget;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import org.lynxz.zzvideoview.R;
@@ -72,6 +78,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     private WeakReference<Activity> mHostActivity;
     private int mLastPlayingPos = 0;//onPause时的播放位置
+
+
+    private BroadcastReceiver mNetworkReceiver;
 
     private ITitleBarImpl mTitleBarImpl = new ITitleBarImpl() {
         @Override
@@ -160,6 +169,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private MediaPlayer.OnErrorListener mErrorListener = new MediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
+            Log.e(TAG, "MediaPlayer.OnErrorListener what = " + what + " , extra = " + extra);
+
+
             return true;
         }
     };
@@ -179,6 +191,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             return false;
         }
     };
+    private boolean mIsOnlineSource;
+    private ProgressBar mPbLoading;
 
     /**
      * 播放器控制功能对外开放接口,包括返回按钮,播放等...
@@ -217,6 +231,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mVv = (ZZVideoView) findViewById(R.id.zzvv_main);
         mTitleBar = (PlayerTitleBar) findViewById(R.id.pt_title_bar);
         mController = (PlayerController) findViewById(R.id.pc_controller);
+        mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
 
         initAnimation();
 
@@ -313,6 +328,12 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mHostActivity = new WeakReference<Activity>(act);
         mVideoUri = Uri.parse(path);
         mVideoProtocol = mVideoUri.getScheme();
+        if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol)) {
+            mIsOnlineSource = true;
+        }
+
+        initNetworkMonitor();
+        registerNetworkReceiver();
         DebugLog.i(TAG, "setVideoUri path = " + path + " mVideoProtocol = " + mVideoProtocol);
     }
 
@@ -417,10 +438,10 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             @Override
             public void run() {
                 int currentUpdateTime = getCurrentTime();
-
                 if (currentUpdateTime >= 1000 && Math.abs(currentUpdateTime - mLastUpdateTime) >= 800) {
                     mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS_TIME);
                     mLastUpdateTime = currentUpdateTime;
+                    //                    if()
                     mLastPlayingPos = 0;
                 }
 
@@ -513,5 +534,39 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      */
     public void onHostDestroy() {
         OrientationUtil.forceOrientation(mHostActivity.get(), OrientationUtil.VERTICAL);
+        unRegisterNetworkReceiver();
     }
+
+    /**
+     * 初始化网络变化监听器
+     */
+    public void initNetworkMonitor() {
+        // 网络变化
+        mNetworkReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // 网络变化
+                if (intent.getAction().equalsIgnoreCase(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                    boolean networkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
+                    mController.updateNetworkState(networkAvailable || !mIsOnlineSource);
+                    if (!networkAvailable) {
+                        mIPlayerImpl.onNetWorkError();
+                    }
+                }
+            }
+        };
+    }
+
+    private void registerNetworkReceiver() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        mHostActivity.get().registerReceiver(mNetworkReceiver, filter);
+    }
+
+    public void unRegisterNetworkReceiver() {
+        if (mNetworkReceiver != null) {
+            mHostActivity.get().unregisterReceiver(mNetworkReceiver);
+            mNetworkReceiver = null;
+        }
+    }
+
 }
