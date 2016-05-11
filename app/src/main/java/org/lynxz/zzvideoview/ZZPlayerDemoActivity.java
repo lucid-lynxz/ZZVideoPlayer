@@ -8,8 +8,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import org.lynxz.zzvideoview.controller.IPlayerImpl;
-import org.lynxz.zzvideoview.widget.VideoPlayer;
+import org.lynxz.zzplayerlibrary.controller.IPlayerImpl;
+import org.lynxz.zzplayerlibrary.widget.VideoPlayer;
 
 public class ZZPlayerDemoActivity extends Activity {
 

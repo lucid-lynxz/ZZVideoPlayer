@@ -4,8 +4,4 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="light_gray">#E07E7E7E</color>
-    <color name="zz_player_progress_first">#373938</color>
-    <color name="zz_player_progress_second">#666666</color>
-    <color name="zz_player_progress_bg">#FF6669</color>
-
 </resources>

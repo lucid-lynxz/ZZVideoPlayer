@@ -8,7 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import org.lynxz.zzvideoview.widget.VideoPlayer;
+import org.lynxz.zzplayerlibrary.widget.VideoPlayer;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 

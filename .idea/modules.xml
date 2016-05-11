@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ZZVideoPlayer.iml" filepath="$PROJECT_DIR$/ZZVideoPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zzplayerlibrary/zzplayerlibrary.iml" filepath="$PROJECT_DIR$/zzplayerlibrary/zzplayerlibrary.iml" />
     </modules>
   </component>
 </project>
