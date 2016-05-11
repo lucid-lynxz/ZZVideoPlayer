@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 23
@@ -21,4 +22,22 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.1'
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.3.4'
+    }
+}
+
+publish {
+    userOrg = 'lynxz'
+    groupId = 'org.lynxz'
+    artifactId = 'zzplayerlib'
+    publishVersion = '1.0.0'
+    desc = 'simple videoview'
+    website = 'https://github.com/lucid-lynxz/ZZVideoPlayer'
 }
