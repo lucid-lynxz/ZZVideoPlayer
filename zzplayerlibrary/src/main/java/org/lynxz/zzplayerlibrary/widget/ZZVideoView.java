@@ -12,18 +12,30 @@ import android.widget.VideoView;
 public class ZZVideoView extends VideoView {
     public ZZVideoView(Context context) {
         super(context);
+        init(context);
     }
 
     public ZZVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
 
     public ZZVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ZZVideoView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(context);
+    }
+
+    private void init(Context context) {
+        //        getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        //        setBackgroundResource(R.drawable.surface_bg);
+        //        setBackgroundColor(Color.BLUE);
+        //若activity主题为透明,则在加载过程中,videoView区域也会变成透明,体验不好
+        setZOrderOnTop(true);
     }
 }
