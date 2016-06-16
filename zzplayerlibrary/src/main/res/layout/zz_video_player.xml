@@ -10,7 +10,8 @@
         android:id="@+id/zzvv_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:background="@android:color/black"/>
 
     <org.lynxz.zzplayerlibrary.widget.PlayerTitleBar
         android:id="@+id/pt_title_bar"

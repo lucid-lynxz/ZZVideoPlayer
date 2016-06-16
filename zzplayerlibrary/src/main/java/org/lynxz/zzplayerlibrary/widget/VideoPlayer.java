@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
 import org.lynxz.zzplayerlibrary.R;
 import org.lynxz.zzplayerlibrary.constant.PlayState;
 import org.lynxz.zzplayerlibrary.constant.SeekBarState;
@@ -150,6 +152,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             int what = msg.what;
             if (what == MSG_UPDATE_PROGRESS_TIME) {
                 mController.updateProgress(getCurrentTime(), getBufferProgress());
+                mVv.setBackgroundColor(Color.TRANSPARENT);
             } else if (what == MSG_AUTO_HIDE_BARS) {
                 animateShowOrHideBars(false);
             }
@@ -159,6 +162,14 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mp) {
+            Log.i(TAG, "onPrepared ");
+            // 这里再设定zOrder就已经无效了
+            //            mVv.setZOrderOnTop(false);
+
+            // 在这里去掉背景的话,需要延时下,不然还是会有瞬间的透明色
+            // 我放到更新进度条的时候再来去掉背景了
+            //            mVv.setBackgroundColor(Color.TRANSPARENT);
+            //            mVv.setBackgroundResource(0);
             mDuration = mp.getDuration();
             mController.updateProgress(mLastUpdateTime, 0, mDuration);
             sendAutoHideBarsMsg();
@@ -236,7 +247,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
         mTitleBar.setTitleBarImpl(mTitleBarImpl);
         mController.setControllerImpl(mControllerImpl);
-
+        //        mVv.setZOrderOnTop(true);
+        //        mVv.setBackgroundColor(Color.RED);
         mVv.setOnTouchListener(this);
         rlPlayer.setOnTouchListener(this);
         mVv.setOnPreparedListener(mPreparedListener);

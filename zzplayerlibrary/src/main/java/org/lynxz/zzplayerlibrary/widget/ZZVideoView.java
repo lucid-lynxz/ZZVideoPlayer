@@ -35,7 +35,9 @@ public class ZZVideoView extends VideoView {
         //        getHolder().setFormat(PixelFormat.TRANSLUCENT);
         //        setBackgroundResource(R.drawable.surface_bg);
         //        setBackgroundColor(Color.BLUE);
-        //若activity主题为透明,则在加载过程中,videoView区域也会变成透明,体验不好
-        setZOrderOnTop(true);
+        // 若activity主题为透明,则在加载过程中,videoView区域也会变成透明,体验不好
+        // 但若是直接将VideoView挪到top层,则会遮盖当前区域的其他控件,所以还是直接指定背景色,然后在prepare
+        // 回调中将背景色设为透明
+        //        setZOrderOnTop(true);
     }
 }
