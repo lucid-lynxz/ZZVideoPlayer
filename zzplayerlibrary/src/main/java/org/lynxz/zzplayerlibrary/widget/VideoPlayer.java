@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -316,10 +317,13 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     }
 
     private void load() {
-        if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol)) {
-            mVv.setVideoPath(mVideoUri.toString());
-        } else if (VideoUriProtocol.PROTOCOL_ANDROID_RESOURCE.equalsIgnoreCase(mVideoProtocol)) {
-            mVv.setVideoURI(mVideoUri);
+        // 处理加载过程中,断网,再联网,如果重新设置video路径,videoview会去reset mediaplayer,可能出错
+        if (TextUtils.isEmpty(mVv.getCurrentVideoPath())) {
+            if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol)) {
+                mVv.setVideoPath(mVideoUri.toString());
+            } else if (VideoUriProtocol.PROTOCOL_ANDROID_RESOURCE.equalsIgnoreCase(mVideoProtocol)) {
+                mVv.setVideoURI(mVideoUri);
+            }
         }
     }
 
@@ -334,7 +338,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         //        stopUpdateTimer();
     }
 
-    public void stopPlay() {111111111
+    public void stopPlay() {
         mVv.stopPlayback();
     }
 

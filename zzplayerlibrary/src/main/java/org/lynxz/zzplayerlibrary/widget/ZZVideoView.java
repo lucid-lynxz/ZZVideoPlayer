@@ -2,6 +2,7 @@ package org.lynxz.zzplayerlibrary.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.VideoView;
@@ -10,6 +11,9 @@ import android.widget.VideoView;
  * Created by zxz on 2016/4/28.
  */
 public class ZZVideoView extends VideoView {
+
+    private String mCurrentVideoPath;
+
     public ZZVideoView(Context context) {
         super(context);
         init(context);
@@ -39,5 +43,21 @@ public class ZZVideoView extends VideoView {
         // 但若是直接将VideoView挪到top层,则会遮盖当前区域的其他控件,所以还是直接指定背景色,然后在prepare
         // 回调中将背景色设为透明
         //        setZOrderOnTop(true);
+    }
+
+    @Override
+    public void setVideoPath(String path) {
+        super.setVideoPath(path);
+        mCurrentVideoPath = path;
+    }
+
+    @Override
+    public void setVideoURI(Uri uri) {
+        super.setVideoURI(uri);
+        mCurrentVideoPath = uri.getPath();
+    }
+
+    public String getCurrentVideoPath() {
+        return mCurrentVideoPath;
     }
 }
