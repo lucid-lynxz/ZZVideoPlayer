@@ -98,7 +98,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         @Override
         public void onPlayTurn() {
             //网络不正常时,不允许切换,本地视频则跳过这一步
-            if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol) && !NetworkUtil.isNetworkAvailable(mHostActivity.get())) {
+            if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol)
+                    && !NetworkUtil.isNetworkAvailable(mHostActivity.get())) {
                 mIPlayerImpl.onNetWorkError();
                 return;
             }
@@ -120,7 +121,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                 case PlayState.ERROR:
                     break;
             }
-
             sendAutoHideBarsMsg();
         }
 
@@ -131,8 +131,10 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                     mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
                     break;
                 case SeekBarState.STOP_TRACKING:
-                    mVv.seekTo(progress);
-                    sendAutoHideBarsMsg();
+                    if (isPlaying()) {
+                        mVv.seekTo(progress);
+                        sendAutoHideBarsMsg();
+                    }
                     break;
             }
         }
@@ -158,6 +160,15 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             }
         }
     };
+
+
+    public boolean isPlaying() {
+        try {
+            return mVv.isPlaying();
+        } catch (IllegalStateException e) {
+            return false;
+        }
+    }
 
     private MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
         @Override
@@ -323,7 +334,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         //        stopUpdateTimer();
     }
 
-    public void stopPlay() {
+    public void stopPlay() {111111111
         mVv.stopPlayback();
     }
 
