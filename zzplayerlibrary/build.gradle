@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 23
@@ -29,15 +28,18 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.novoda:bintray-release:0.3.4'
     }
 }
 
-publish {
-    userOrg = 'lynxz'
-    groupId = 'org.lynxz'
-    artifactId = 'zzplayerlib'
-    publishVersion = '1.0.0'
-    desc = 'simple videoview'
-    website = 'https://github.com/lucid-lynxz/ZZVideoPlayer'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
+    }
 }
+
+apply from: 'bintray.gradle'
