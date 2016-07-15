@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -81,8 +80,11 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private WeakReference<Activity> mHostActivity;
     private int mLastPlayingPos = 0;//onPause时的播放位置
 
-
     private BroadcastReceiver mNetworkReceiver;
+
+    private boolean mOnPrepared;
+    private boolean mHasSetPath2vv;//是否已经将路径设置给了VideoView
+    private int mLastBufferLength;//断网时获取的已缓冲长度
 
     private ITitleBarImpl mTitleBarImpl = new ITitleBarImpl() {
         @Override
@@ -94,7 +96,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             }
         }
     };
-    private boolean mOnPrepared;
 
     /**
      * 更新播放器状态
@@ -121,10 +122,11 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                     pausePlay();
                     break;
                 case PlayState.IDLE:
+                case PlayState.PREPARE:
                 case PlayState.PAUSE:
                 case PlayState.COMPLETE:
                 case PlayState.STOP:
-                    startPlay();
+                    startOrRestartPlay();
                     break;
                 case PlayState.ERROR:
                     break;
@@ -161,6 +163,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             super.handleMessage(msg);
             int what = msg.what;
             if (what == MSG_UPDATE_PROGRESS_TIME) {
+                if (mNetworkAvailable) {
+                    mLastBufferLength = 0;
+                }
                 mLastPlayingPos = getCurrentTime();
                 mController.updateProgress(mLastPlayingPos, getBufferProgress());
                 mVv.setBackgroundColor(Color.TRANSPARENT);
@@ -192,6 +197,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             //            mVv.setBackgroundColor(Color.TRANSPARENT);
             //            mVv.setBackgroundResource(0);
             mOnPrepared = true;
+            updatePlayState(PlayState.PREPARE);
             mDuration = mp.getDuration();
             mController.updateProgress(mLastUpdateTime, 0, mDuration);
             sendAutoHideBarsMsg();
@@ -203,14 +209,14 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         public boolean onError(MediaPlayer mp, int what, int extra) {
             Log.e(TAG, "MediaPlayer.OnErrorListener what = " + what + " , extra = " + extra + " ,mNetworkAvailable:" + mNetworkAvailable + " ,mCurrentPlayState:" + mCurrentPlayState);
             if (mCurrentPlayState != PlayState.ERROR) {
-                // TODO: 2016/7/15 判断网络状态,如果有网络,则重新加载播放,如果没有则报错
+                //  判断网络状态,如果有网络,则重新加载播放,如果没有则报错
                 if ((mIsOnlineSource && mNetworkAvailable) || !mIsOnlineSource) {
-                    load();
-                    startPlay();
+                    startOrRestartPlay();
                 } else {
                     if (mIPlayerImpl != null) {
                         mIPlayerImpl.onError();
                     }
+                    mOnPrepared = false;
                     updatePlayState(PlayState.ERROR);
                 }
             }
@@ -339,20 +345,50 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mTitleBar.setTitle(title);
     }
 
+    /**
+     * 加载视频
+     * 在这里才真正把视频路径设置到VideoView中
+     */
     private void load() {
+        //        if (mHasSetPath2vv) {
+        //            return;
+        //        }
+        mNetworkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
+
         // 处理加载过程中,断网,再联网,如果重新设置video路径,videoView会去reset mediaPlayer,可能出错
-        if (TextUtils.isEmpty(mVv.getCurrentVideoPath())) {
-            if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol)) {
-                mVv.setVideoPath(mVideoUri.toString());
-            } else if (VideoUriProtocol.PROTOCOL_ANDROID_RESOURCE.equalsIgnoreCase(mVideoProtocol)) {
-                mVv.setVideoURI(mVideoUri);
-            }
+        // TODO: 2016/7/15 郁闷了,不重新设置的话,断网播放到缓冲尽头又联网时,没法继续加载播放,矛盾啊,先备注下
+        if (mIsOnlineSource) {
+            mVv.setVideoPath(mVideoUri.toString());
+        } else if (VideoUriProtocol.PROTOCOL_ANDROID_RESOURCE.equalsIgnoreCase(mVideoProtocol)) {
+            mVv.setVideoURI(mVideoUri);
+        }
+        mHasSetPath2vv = true;
+    }
+
+    /**
+     * 开始播放或重新加载播放
+     */
+    public void startOrRestartPlay() {
+        // 断过网
+        if (mLastBufferLength > 0 && mIsOnlineSource) {
+            resumeFromError();
+        } else {
+            goOnPlay();
         }
     }
 
-    public void startPlay() {
-        updatePlayState(PlayState.PLAY);
+    public void resumeFromError() {
+        load();
         mVv.start();
+        mVv.seekTo(mLastPlayingPos);
+        updatePlayState(PlayState.PLAY);
+        resetUpdateTimer();
+    }
+
+
+    public void goOnPlay() {
+        mVv.start();
+        updatePlayState(PlayState.PLAY);
         resetUpdateTimer();
     }
 
@@ -395,7 +431,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     public void loadAndStartVideo(@NonNull Activity act, @NonNull String path) {
         setVideoUri(act, path);
         load();
-        startPlay();
+        startOrRestartPlay();
     }
 
 
@@ -564,7 +600,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     public void onHostResume() {
         if (mLastPlayingPos > 0) {
             // 进度条更新为上次播放时间
-            startPlay();
+            startOrRestartPlay();
             mVv.seekTo(mLastPlayingPos);
             resetUpdateTimer();
         }
@@ -596,6 +632,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      * 初始化网络变化监听器
      */
     public void initNetworkMonitor() {
+        unRegisterNetworkReceiver();
         // 网络变化
         mNetworkReceiver = new BroadcastReceiver() {
             @Override
@@ -605,6 +642,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                     mNetworkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
                     mController.updateNetworkState(mNetworkAvailable || !mIsOnlineSource);
                     if (!mNetworkAvailable) {
+                        mLastBufferLength = getBufferProgress() * mDuration / 100;
                         mIPlayerImpl.onNetWorkError();
                     } else {
                         if (mCurrentPlayState == PlayState.ERROR) {

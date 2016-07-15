@@ -45,6 +45,7 @@ public class ZZPlayerDemoActivity extends Activity {
 
         @Override
         public void onError() {
+            showToast("player error occur");
         }
     };
 
