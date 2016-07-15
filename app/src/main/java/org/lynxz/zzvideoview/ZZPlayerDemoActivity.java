@@ -110,7 +110,6 @@ public class ZZPlayerDemoActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("xxx", "onDestroy ");
         mVp.onHostDestroy();
     }
 }

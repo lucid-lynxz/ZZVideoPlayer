@@ -1,6 +1,9 @@
 # 简易视频播放器
-封装了系统VideoView,主要进行了网络异常处理以及进度条拖动功能
-![播放器](http://upload-images.jianshu.io/upload_images/947286-23980d03f5efbf87.gif?imageMogr2/auto-orient/strip)
+封装了系统VideoView,主要进行了网络异常处理以及进度条拖动/横竖屏切换功能,
+并且当用户切换到桌面或其他app后再返回,会从中断的位置继续播放
+
+
+![播放器](https://github.com/lucid-lynxz/markdownPhotos/blob/master/zz_video_player/zz_video_player_01.gif?raw=true)
 
 ## 使用
 
@@ -38,7 +41,7 @@ mVp.startPlay();//开始播放
 mVp.loadAndStartVideo(this, mVideoUrl); // 设置视频播放路径并开始播放
 ```
 
-### 实现IPlayerImpl类
+### 实现IPlayerImpl控制类
 ```java
 private IPlayerImpl playerImpl = new IPlayerImpl() {
 
@@ -81,7 +84,7 @@ public void onConfigurationChanged(Configuration newConfig) {
 }
 ```
 
-### 设置页面在onResume时重新从上次中断位置继续播放
+### 设置页面在onResume时重新从上次中断位置继续播放,关闭页面时,解除网络监听等
 ```java
 
 @Override
@@ -94,5 +97,11 @@ protected void onResume() {
 protected void onPause() {
     super.onPause();
     mVp.onHostPause();
+}
+
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mVp.onHostDestroy();
 }
 ```
