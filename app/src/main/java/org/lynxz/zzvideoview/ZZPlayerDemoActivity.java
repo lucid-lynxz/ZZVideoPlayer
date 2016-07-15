@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.lynxz.zzplayerlibrary.controller.IPlayerImpl;
+import org.lynxz.zzplayerlibrary.util.OrientationUtil;
 import org.lynxz.zzplayerlibrary.widget.VideoPlayer;
 
 public class ZZPlayerDemoActivity extends Activity {
@@ -39,8 +41,14 @@ public class ZZPlayerDemoActivity extends Activity {
 
         @Override
         public void onBack() {
-            mVp.onHostDestroy();
-            finish();
+            // 全屏播放时,单击左上角返回箭头,先回到竖屏状态,再关闭
+            // 这里功能最好跟onBackPressed()操作一致
+            int orientation = OrientationUtil.getOrientation(ZZPlayerDemoActivity.this);
+            if (orientation == OrientationUtil.HORIZONTAL) {
+                OrientationUtil.forceOrientation(ZZPlayerDemoActivity.this, OrientationUtil.VERTICAL);
+            } else {
+                finish();
+            }
         }
 
         @Override
@@ -97,5 +105,12 @@ public class ZZPlayerDemoActivity extends Activity {
     public void onBackPressed() {
         mVp.onHostDestroy();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("xxx", "onDestroy ");
+        mVp.onHostDestroy();
     }
 }
