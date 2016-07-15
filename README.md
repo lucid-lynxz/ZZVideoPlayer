@@ -6,6 +6,21 @@
 ![播放器](https://github.com/lucid-lynxz/markdownPhotos/blob/master/zz_video_player/zz_video_player_01.gif?raw=true)
 
 ## 使用
+```maven
+<dependency>
+  <groupId>org.lynxz.zzplayerlibrarys</groupId>
+  <artifactId>zzplayer</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
+```
+
+```gradle
+dependencies {
+    ......
+    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.0'
+}
+```
 
 ### 播放网络视频添加权限
 ```xml
@@ -20,6 +35,15 @@
     android:configChanges="keyboard|orientation|screenSize"
     android:launchMode="singleTask"
     android:screenOrientation="portrait"/>
+```
+
+### 导入播放器
+这里设置一个默认高度，在竖屏时的高度，横屏时默认为屏幕宽度
+```xml
+<org.lynxz.zzplayerlibrary.widget.VideoPlayer
+    android:id="@+id/vp"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"/>
 ```
 
 ### 视频路径
