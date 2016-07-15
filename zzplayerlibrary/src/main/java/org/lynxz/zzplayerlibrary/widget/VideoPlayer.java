@@ -95,28 +95,34 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         }
     };
 
+    /**
+     * 更新播放器状态
+     *
+     * @param playState {@link PlayState}
+     */
+    private void updatePlayState(int playState) {
+        mCurrentPlayState = playState;
+        mController.setPlayState(playState);
+    }
+
     private IControllerImpl mControllerImpl = new IControllerImpl() {
         @Override
         public void onPlayTurn() {
             //网络不正常时,不允许切换,本地视频则跳过这一步
             if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol)
-                    && !NetworkUtil.isNetworkAvailable(mHostActivity.get())) {
+                    && !mNetworkAvailable) {
                 mIPlayerImpl.onNetWorkError();
                 return;
             }
 
             switch (mCurrentPlayState) {
                 case PlayState.PLAY:
-                    mController.setPlayState(PlayState.PAUSE);
-                    mCurrentPlayState = PlayState.PAUSE;
                     pausePlay();
                     break;
                 case PlayState.IDLE:
                 case PlayState.PAUSE:
                 case PlayState.COMPLETE:
                 case PlayState.STOP:
-                    mController.setPlayState(PlayState.PLAY);
-                    mCurrentPlayState = PlayState.PLAY;
                     startPlay();
                     break;
                 case PlayState.ERROR:
@@ -154,13 +160,15 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             super.handleMessage(msg);
             int what = msg.what;
             if (what == MSG_UPDATE_PROGRESS_TIME) {
-                mController.updateProgress(getCurrentTime(), getBufferProgress());
+                mLastPlayingPos = getCurrentTime();
+                mController.updateProgress(mLastPlayingPos, getBufferProgress());
                 mVv.setBackgroundColor(Color.TRANSPARENT);
             } else if (what == MSG_AUTO_HIDE_BARS) {
                 animateShowOrHideBars(false);
             }
         }
     };
+    private boolean mNetworkAvailable;
 
 
     public boolean isPlaying() {
@@ -191,19 +199,32 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private MediaPlayer.OnErrorListener mErrorListener = new MediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
-            Log.e(TAG, "MediaPlayer.OnErrorListener what = " + what + " , extra = " + extra);
-
-
+            Log.e(TAG, "MediaPlayer.OnErrorListener what = " + what + " , extra = " + extra + " ,mNetworkAvailable:" + mNetworkAvailable + " ,mCurrentPlayState:" + mCurrentPlayState);
+            if (mCurrentPlayState != PlayState.ERROR) {
+                // TODO: 2016/7/15 判断网络状态,如果有网络,则重新加载播放,如果没有则报错
+                if ((mIsOnlineSource && mNetworkAvailable) || !mIsOnlineSource) {
+                    load();
+                    startPlay();
+                } else {
+                    if (mIPlayerImpl != null) {
+                        mIPlayerImpl.onError();
+                    }
+                    updatePlayState(PlayState.ERROR);
+                }
+            }
             return true;
         }
     };
     private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
-            mController.setPlayState(PlayState.STOP);
+            //            mController.setPlayState(PlayState.STOP);
             mController.updateProgress(0, 0);
-            mCurrentPlayState = PlayState.COMPLETE;
+            updatePlayState(PlayState.COMPLETE);
             stopUpdateTimer();
+            if (mIPlayerImpl != null) {
+                mIPlayerImpl.onComplete();
+            }
         }
     };
     private MediaPlayer.OnInfoListener mInfoListener = new MediaPlayer.OnInfoListener() {
@@ -317,7 +338,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     }
 
     private void load() {
-        // 处理加载过程中,断网,再联网,如果重新设置video路径,videoview会去reset mediaplayer,可能出错
+        // 处理加载过程中,断网,再联网,如果重新设置video路径,videoView会去reset mediaPlayer,可能出错
         if (TextUtils.isEmpty(mVv.getCurrentVideoPath())) {
             if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol)) {
                 mVv.setVideoPath(mVideoUri.toString());
@@ -328,13 +349,15 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     }
 
     public void startPlay() {
+        updatePlayState(PlayState.PLAY);
         mVv.start();
-        mController.setPlayState(PlayState.PLAY);
         resetUpdateTimer();
     }
 
     public void pausePlay() {
+        updatePlayState(PlayState.PAUSE);
         mVv.pause();
+
         //        stopUpdateTimer();
     }
 
@@ -573,10 +596,14 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             public void onReceive(Context context, Intent intent) {
                 // 网络变化
                 if (intent.getAction().equalsIgnoreCase(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                    boolean networkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
-                    mController.updateNetworkState(networkAvailable || !mIsOnlineSource);
-                    if (!networkAvailable) {
+                    mNetworkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
+                    mController.updateNetworkState(mNetworkAvailable || !mIsOnlineSource);
+                    if (!mNetworkAvailable) {
                         mIPlayerImpl.onNetWorkError();
+                    } else {
+                        if (mCurrentPlayState == PlayState.ERROR) {
+                            updatePlayState(PlayState.IDLE);
+                        }
                     }
                 }
             }
