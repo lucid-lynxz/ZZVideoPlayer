@@ -31,7 +31,6 @@ import org.lynxz.zzplayerlibrary.controller.AnimationImpl;
 import org.lynxz.zzplayerlibrary.controller.IControllerImpl;
 import org.lynxz.zzplayerlibrary.controller.IPlayerImpl;
 import org.lynxz.zzplayerlibrary.controller.ITitleBarImpl;
-import org.lynxz.zzplayerlibrary.util.DebugLog;
 import org.lynxz.zzplayerlibrary.util.DensityUtil;
 import org.lynxz.zzplayerlibrary.util.NetworkUtil;
 import org.lynxz.zzplayerlibrary.util.OrientationUtil;
@@ -70,7 +69,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     private static final int MIN_CLICK_INTERVAL = 400;//连续两次down事件最小时间间隔(ms)
     private static final int UPDATE_TIMER_INTERVAL = 1000;
-    private static final int TIME_AUTO_HIDE_BARS_DELAY = 2000;
+    private static final int TIME_AUTO_HIDE_BARS_DELAY = 3800;
 
     private static final int MSG_UPDATE_PROGRESS_TIME = 1;//更新播放进度时间
     private static final int MSG_AUTO_HIDE_BARS = 2;//隐藏标题栏和控制条
@@ -78,13 +77,17 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private Timer mUpdateTimer = null;
 
     private WeakReference<Activity> mHostActivity;
-    private int mLastPlayingPos = 0;//onPause时的播放位置
+    private int mLastPlayingPos = -1;//onPause时的播放位置
 
     private BroadcastReceiver mNetworkReceiver;
 
     private boolean mOnPrepared;
     private boolean mHasSetPath2vv;//是否已经将路径设置给了VideoView
-    private int mLastBufferLength;//断网时获取的已缓冲长度
+    /**
+     * 断网时获取的已缓冲长度
+     * 从-1开始,用于加载前就断网,此时通过方法getBufferLength()得到的是0,不便于判断
+     */
+    private int mLastBufferLength = -1;
 
     private ITitleBarImpl mTitleBarImpl = new ITitleBarImpl() {
         @Override
@@ -141,7 +144,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                     mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
                     break;
                 case SeekBarState.STOP_TRACKING:
-                    if (isPlaying()) {
+                    if (mOnPrepared && isPlaying()) {
                         mVv.seekTo(progress);
                         sendAutoHideBarsMsg();
                     }
@@ -164,9 +167,12 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             int what = msg.what;
             if (what == MSG_UPDATE_PROGRESS_TIME) {
                 if (mNetworkAvailable) {
-                    mLastBufferLength = 0;
+                    mLastBufferLength = -1;
                 }
                 mLastPlayingPos = getCurrentTime();
+                if (mCurrentPlayState == PlayState.COMPLETE) {
+                    mLastPlayingPos = 0;
+                }
                 mController.updateProgress(mLastPlayingPos, getBufferProgress());
                 mVv.setBackgroundColor(Color.TRANSPARENT);
             } else if (what == MSG_AUTO_HIDE_BARS) {
@@ -188,7 +194,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mp) {
-            Log.i(TAG, "onPrepared ");
             // 这里再设定zOrder就已经无效了
             //            mVv.setZOrderOnTop(false);
 
@@ -226,10 +231,11 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
-            //            mController.setPlayState(PlayState.STOP);
-            mController.updateProgress(0, 0);
-            updatePlayState(PlayState.COMPLETE);
+            mLastPlayingPos = 0;
+            mLastBufferLength = -1;
+            mController.updateProgress(0, 100);
             stopUpdateTimer();
+            updatePlayState(PlayState.COMPLETE);
             if (mIPlayerImpl != null) {
                 mIPlayerImpl.onComplete();
             }
@@ -358,6 +364,10 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         // 处理加载过程中,断网,再联网,如果重新设置video路径,videoView会去reset mediaPlayer,可能出错
         // TODO: 2016/7/15 郁闷了,不重新设置的话,断网播放到缓冲尽头又联网时,没法继续加载播放,矛盾啊,先备注下
         if (mIsOnlineSource) {
+            if (!mNetworkAvailable) {
+                Log.i(TAG, "load failed because network not available");
+                return;
+            }
             mVv.setVideoPath(mVideoUri.toString());
         } else if (VideoUriProtocol.PROTOCOL_ANDROID_RESOURCE.equalsIgnoreCase(mVideoProtocol)) {
             mVv.setVideoURI(mVideoUri);
@@ -370,7 +380,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      */
     public void startOrRestartPlay() {
         // 断过网
-        if (mLastBufferLength > 0 && mIsOnlineSource) {
+        if (mLastBufferLength >= 0 && mIsOnlineSource) {
             resumeFromError();
         } else {
             goOnPlay();
@@ -388,6 +398,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     public void goOnPlay() {
         mVv.start();
+        if (mCurrentPlayState == PlayState.COMPLETE) {
+            mVv.seekTo(0);
+        }
         updatePlayState(PlayState.PLAY);
         resetUpdateTimer();
     }
@@ -425,7 +438,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
         initNetworkMonitor();
         registerNetworkReceiver();
-        DebugLog.i(TAG, "setVideoUri path = " + path + " mVideoProtocol = " + mVideoProtocol);
     }
 
     public void loadAndStartVideo(@NonNull Activity act, @NonNull String path) {
@@ -528,11 +540,11 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mUpdateTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                // 播放结束(onComplete)后,点击播放按钮,开始播放时初次读取到的时间值是视频结束位置
                 int currentUpdateTime = getCurrentTime();
                 if (currentUpdateTime >= 1000 && Math.abs(currentUpdateTime - mLastUpdateTime) >= 800) {
                     mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS_TIME);
                     mLastUpdateTime = currentUpdateTime;
-                    //                    if()
                     mLastPlayingPos = 0;
                 }
 
@@ -598,11 +610,11 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      * 宿主页面onResume的时候从上次播放位置继续播放
      */
     public void onHostResume() {
-        if (mLastPlayingPos > 0) {
+        Log.i(TAG, "onHostResume " + mLastPlayingPos);
+        mNetworkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
+        if (mLastPlayingPos >= 0) {
             // 进度条更新为上次播放时间
             startOrRestartPlay();
-            mVv.seekTo(mLastPlayingPos);
-            resetUpdateTimer();
         }
 
         //强制弹出标题栏和控制栏
@@ -612,10 +624,13 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /**
      * 宿主页面onPause的时候记录播放位置，好在onResume的时候从中断点继续播放
+     * 如果在宿主页面onStop的时候才来记录位置,则取到的都会是0
      */
     public void onHostPause() {
         mLastPlayingPos = getCurrentTime();
+        getBufferLength();
         stopUpdateTimer();
+        mHandler.removeMessages(MSG_UPDATE_PROGRESS_TIME);
         mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
         // 在这里不进行stop或者pause播放的行为，因为特殊情况下会导致ANR出现
     }
@@ -642,7 +657,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                     mNetworkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
                     mController.updateNetworkState(mNetworkAvailable || !mIsOnlineSource);
                     if (!mNetworkAvailable) {
-                        mLastBufferLength = getBufferProgress() * mDuration / 100;
+                        getBufferLength();
                         mIPlayerImpl.onNetWorkError();
                     } else {
                         if (mCurrentPlayState == PlayState.ERROR) {
@@ -652,6 +667,14 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                 }
             }
         };
+    }
+
+    /**
+     * 获取已缓冲长度 毫秒
+     */
+    private int getBufferLength() {
+        mLastBufferLength = getBufferProgress() * mDuration / 100;
+        return mLastBufferLength;
     }
 
     private void registerNetworkReceiver() {
