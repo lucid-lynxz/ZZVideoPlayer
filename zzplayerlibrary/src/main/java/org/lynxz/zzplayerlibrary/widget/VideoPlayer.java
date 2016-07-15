@@ -94,6 +94,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             }
         }
     };
+    private boolean mOnPrepared;
 
     /**
      * 更新播放器状态
@@ -190,6 +191,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             // 我放到更新进度条的时候再来去掉背景了
             //            mVv.setBackgroundColor(Color.TRANSPARENT);
             //            mVv.setBackgroundResource(0);
+            mOnPrepared = true;
             mDuration = mp.getDuration();
             mController.updateProgress(mLastUpdateTime, 0, mDuration);
             sendAutoHideBarsMsg();
@@ -356,13 +358,17 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     public void pausePlay() {
         updatePlayState(PlayState.PAUSE);
-        mVv.pause();
+        if (canPause()) {
+            mVv.pause();
+        }
 
         //        stopUpdateTimer();
     }
 
     public void stopPlay() {
-        mVv.stopPlayback();
+        if (canStop()) {
+            mVv.stopPlayback();
+        }
     }
 
     /**
@@ -622,4 +628,14 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         }
     }
 
+    private boolean canPause() {
+        return ((mCurrentPlayState != PlayState.ERROR) && mOnPrepared && isPlaying() && mVv.canPause());
+    }
+
+    private boolean canStop() {
+        return (mCurrentPlayState == PlayState.PREPARE)
+                || (mCurrentPlayState == PlayState.PAUSE)
+                || (mCurrentPlayState == PlayState.COMPLETE)
+                || isPlaying();
+    }
 }
