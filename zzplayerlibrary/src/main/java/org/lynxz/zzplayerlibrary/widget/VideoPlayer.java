@@ -397,6 +397,10 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
 
     public void goOnPlay() {
+        // 在线视频,网络异常时,不进行加载播放
+        if (mIsOnlineSource && !mNetworkAvailable) {
+            return;
+        }
         mVv.start();
         if (mCurrentPlayState == PlayState.COMPLETE) {
             mVv.seekTo(0);
