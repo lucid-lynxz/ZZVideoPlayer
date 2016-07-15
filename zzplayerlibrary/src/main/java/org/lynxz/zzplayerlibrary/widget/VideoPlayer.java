@@ -571,7 +571,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      * @return 缓冲百分比 0-100
      */
     private int getBufferProgress() {
-        return mVv.getBufferPercentage();
+        return mIsOnlineSource ? mVv.getBufferPercentage() : 100;
     }
 
     /**
