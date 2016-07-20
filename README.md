@@ -46,6 +46,23 @@ dependencies {
     android:layout_height="200dp"/>
 ```
 
+### 控制栏自定义设置
+```java
+//设置控制栏播放/暂停/全屏/退出全屏按钮图标
+mVp.setIconPlay(R.drawable.play);
+mVp.setIconPause(R.drawable.pause);
+mVp.setIconExpand(R.drawable.expand);
+mVp.setIconShrink(R.drawable.shrink);
+//隐藏/显示控制栏时间值信息
+// mVp.hideTimes();
+// mVp.showTimes();
+
+// 设置进度条样式
+mVp.setProgressThumbDrawable(R.drawable.progress_thumb);
+mVp.setProgressLayerDrawables(R.drawable.biz_video_progressbar);//自定义的layer-list
+// mVp.setProgressLayerDrawables(0, 0, R.drawable.shape_progress);//逐层设置,0的话表示保持默认,具体请参考方法注释
+```
+
 ### 视频路径
 ```java
 //工程文件内的视频文件以及网络视频地址
