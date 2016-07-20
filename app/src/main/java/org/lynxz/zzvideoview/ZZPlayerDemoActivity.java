@@ -69,14 +69,19 @@ public class ZZPlayerDemoActivity extends Activity {
         mVp = (VideoPlayer) findViewById(R.id.vp);
         mVp.setTitle("视频名称");
         mVp.loadAndStartVideo(this, mVideoUrl);
-        mVp.setProgressThumbDrawable(R.drawable.progress_thumb);
+        //设置控制栏播放/暂停/全屏/退出全屏按钮图标
         mVp.setIconPlay(R.drawable.play);
         mVp.setIconPause(R.drawable.pause);
         mVp.setIconExpand(R.drawable.expand);
         mVp.setIconShrink(R.drawable.shrink);
-        //        mVp.hideTimes();
-        //        mVp.setProgressLayerDrawables(0, 0, R.drawable.shape_progress);
-        mVp.setProgressLayerDrawables(R.drawable.biz_video_progressbar);
+        //隐藏/显示控制栏时间值信息
+        // mVp.hideTimes();
+        // mVp.showTimes();
+
+        // 设置进度条样式
+        mVp.setProgressThumbDrawable(R.drawable.progress_thumb);
+        mVp.setProgressLayerDrawables(R.drawable.biz_video_progressbar);//自定义的layer-list
+        // mVp.setProgressLayerDrawables(0, 0, R.drawable.shape_progress);//逐层设置,0的话表示保持默认
 
     }
 
