@@ -28,15 +28,6 @@ buildscript {
         jcenter()
     }
     dependencies {
-    }
-}
-
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
     }
