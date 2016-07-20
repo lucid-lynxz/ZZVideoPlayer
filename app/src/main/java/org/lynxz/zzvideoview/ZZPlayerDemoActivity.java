@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -70,6 +69,15 @@ public class ZZPlayerDemoActivity extends Activity {
         mVp = (VideoPlayer) findViewById(R.id.vp);
         mVp.setTitle("视频名称");
         mVp.loadAndStartVideo(this, mVideoUrl);
+        mVp.setProgressThumbDrawable(R.drawable.progress_thumb);
+        mVp.setIconPlay(R.drawable.play);
+        mVp.setIconPause(R.drawable.pause);
+        mVp.setIconExpand(R.drawable.expand);
+        mVp.setIconShrink(R.drawable.shrink);
+        //        mVp.hideTimes();
+        //        mVp.setProgressLayerDrawables(0, 0, R.drawable.shape_progress);
+        mVp.setProgressLayerDrawables(R.drawable.biz_video_progressbar);
+
     }
 
 

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -702,5 +703,83 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                 || (mCurrentPlayState == PlayState.PAUSE)
                 || (mCurrentPlayState == PlayState.COMPLETE)
                 || isPlaying();
+
+    }
+
+
+    /**
+     * 设置进度条样式
+     *
+     * @param resId 进度条progressDrawable分层资源
+     *              数组表示的进度资源分别为 background - secondaryProgress - progress
+     *              若对应的数组元素值 <=0,表示该层素材保持不变;
+     *              注意:progress和secondaryProgress的shape资源需要做成clip的,否则会直接完全显示
+     */
+    public void setProgressLayerDrawables(@DrawableRes int... resId) {
+        mController.setProgressLayerDrawables(resId);
+    }
+
+    public void setProgressLayerDrawables(@DrawableRes int resId) {
+        mController.setProgressLayerDrawables(resId);
+
+    }
+
+    /**
+     * 设置进度条按钮图片
+     *
+     * @param thumbId
+     */
+    public void setProgressThumbDrawable(@DrawableRes int thumbId) {
+        mController.setProgressThumbDrawable(thumbId);
+    }
+
+    /**
+     * 设置暂停按钮图标
+     *
+     * @param iconPause
+     */
+    public void setIconPause(@DrawableRes int iconPause) {
+        mController.setIconPause(iconPause);
+    }
+
+    /**
+     * 设置播放按钮图标
+     *
+     * @param iconPlay
+     */
+    public void setIconPlay(@DrawableRes int iconPlay) {
+        mController.setIconPlay(iconPlay);
+    }
+
+    /**
+     * 设置退出全屏按钮
+     *
+     * @param iconShrink
+     */
+    public void setIconShrink(@DrawableRes int iconShrink) {
+        mController.setIconShrink(iconShrink);
+    }
+
+    /**
+     * 设置退出全屏按钮
+     *
+     * @param iconExpand
+     */
+    public void setIconExpand(@DrawableRes int iconExpand) {
+        mController.setIconExpand(iconExpand);
+    }
+
+    /**
+     * 隐藏时间进度和总时间信息
+     */
+    public void hideTimes() {
+        mController.hideTimes();
+    }
+
+    /**
+     * 显示时间进度和总时间信息
+     */
+    public void showTimes() {
+        mController.showTimes();
     }
 }
