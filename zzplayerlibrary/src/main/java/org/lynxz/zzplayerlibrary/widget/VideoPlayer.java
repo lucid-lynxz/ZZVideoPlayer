@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -100,6 +101,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             }
         }
     };
+    private FrameLayout mFlLoading;
 
     /**
      * 更新播放器状态
@@ -146,6 +148,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                     break;
                 case SeekBarState.STOP_TRACKING:
                     if (mOnPrepared && isPlaying()) {
+                        isLoading(true);
                         mVv.seekTo(progress);
                         sendAutoHideBarsMsg();
                     }
@@ -289,6 +292,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mVv = (ZZVideoView) findViewById(R.id.zzvv_main);
         mTitleBar = (PlayerTitleBar) findViewById(R.id.pt_title_bar);
         mController = (PlayerController) findViewById(R.id.pc_controller);
+
+        mFlLoading = (FrameLayout) findViewById(R.id.fl_loading);
         mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
 
         initAnimation();
@@ -546,17 +551,27 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             public void run() {
                 // 播放结束(onComplete)后,点击播放按钮,开始播放时初次读取到的时间值是视频结束位置
                 int currentUpdateTime = getCurrentTime();
+
+
                 if (currentUpdateTime >= 1000 && Math.abs(currentUpdateTime - mLastUpdateTime) >= 800) {
                     mHandler.sendEmptyMessage(MSG_UPDATE_PROGRESS_TIME);
                     mLastUpdateTime = currentUpdateTime;
                     mLastPlayingPos = 0;
+                    mCurrentPlayState = PlayState.PLAY;
+                    isLoading(false);
+                } else {
+                    isLoading(true);
                 }
 
             }
         }, 0, UPDATE_TIMER_INTERVAL);
     }
 
+    /**
+     * 停止更新进度时间的timer
+     */
     private void stopUpdateTimer() {
+        isLoading(false);
         if (mUpdateTimer != null) {
             mUpdateTimer.cancel();
             mUpdateTimer = null;
@@ -769,6 +784,18 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     }
 
     /**
+     * 设置加载提示框图标资源
+     */
+    public void setIconLoading(@DrawableRes int iconLoading) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            mPbLoading.setIndeterminateDrawable(getResources().getDrawable(iconLoading, null));
+        } else {
+            mPbLoading.setIndeterminateDrawable(getResources().getDrawable(iconLoading));
+        }
+
+    }
+
+    /**
      * 隐藏时间进度和总时间信息
      */
     public void hideTimes() {
@@ -781,4 +808,19 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     public void showTimes() {
         mController.showTimes();
     }
+
+    /**
+     * 是否显示加载进度框
+     */
+    private void isLoading(final boolean show) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mFlLoading.setVisibility((show && (mCurrentPlayState == PlayState.PLAY || mCurrentPlayState == PlayState.PREPARE))
+                        ? VISIBLE : GONE);
+            }
+        });
+    }
+
+
 }

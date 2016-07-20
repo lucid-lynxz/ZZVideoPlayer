@@ -77,6 +77,8 @@ public class ZZPlayerDemoActivity extends Activity {
         //隐藏/显示控制栏时间值信息
         // mVp.hideTimes();
         // mVp.showTimes();
+        // 自定义加载框图标
+        mVp.setIconLoading(R.drawable.loading_red);
 
         // 设置进度条样式
         mVp.setProgressThumbDrawable(R.drawable.progress_thumb);

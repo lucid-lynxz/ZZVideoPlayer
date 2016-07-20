@@ -5,7 +5,6 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/black">
 
-
     <org.lynxz.zzplayerlibrary.widget.ZZVideoView
         android:id="@+id/zzvv_main"
         android:layout_width="match_parent"
@@ -25,11 +24,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
 
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+
+    <FrameLayout
+        android:id="@+id/fl_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/zz_player_loading_rotate"
+            android:maxHeight="38dp"
+            android:maxWidth="38dp"
+            android:minHeight="38dp"
+            android:minWidth="38dp"/>
+
+    </FrameLayout>
 
 </RelativeLayout>
