@@ -431,7 +431,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      * 2. 设置网络视频文件: "http:\//****\/abc.mp4"
      *
      * @param path
-     * @return 设置成功返回 true
      */
     public void setVideoUri(@NonNull Activity act, @NonNull String path) {
         mHostActivity = new WeakReference<Activity>(act);
@@ -712,7 +711,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      *
      * @param resId 进度条progressDrawable分层资源
      *              数组表示的进度资源分别为 background - secondaryProgress - progress
-     *              若对应的数组元素值 <=0,表示该层素材保持不变;
+     *              若对应的数组元素值小于等于0,表示该层素材保持不变;
      *              注意:progress和secondaryProgress的shape资源需要做成clip的,否则会直接完全显示
      */
     public void setProgressLayerDrawables(@DrawableRes int... resId) {

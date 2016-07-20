@@ -256,8 +256,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置暂停按钮图标
-     *
-     * @param iconPause
      */
     public void setIconPause(@DrawableRes int iconPause) {
         this.iconPause = iconPause;
@@ -268,8 +266,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置播放按钮图标
-     *
-     * @param iconPlay
      */
     public void setIconPlay(@DrawableRes int iconPlay) {
         this.iconPlay = iconPlay;
@@ -280,8 +276,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置退出全屏按钮
-     *
-     * @param iconShrink
      */
     public void setIconShrink(@DrawableRes int iconShrink) {
         this.iconShrink = iconShrink;
@@ -292,8 +286,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置退出全屏按钮
-     *
-     * @param iconExpand
      */
     public void setIconExpand(@DrawableRes int iconExpand) {
         this.iconExpand = iconExpand;
@@ -341,8 +333,6 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置进度条按钮图片
-     *
-     * @param thumbId
      */
     public void setProgressThumbDrawable(@DrawableRes int thumbId) {
         if (thumbId > 0) {
