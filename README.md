@@ -18,7 +18,7 @@
 ```gradle
 dependencies {
     ......
-    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.2'
+    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.3'
 }
 ```
 
