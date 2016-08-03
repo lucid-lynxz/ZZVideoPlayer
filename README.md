@@ -10,7 +10,7 @@
 <dependency>
   <groupId>org.lynxz.zzplayerlibrarys</groupId>
   <artifactId>zzplayer</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <type>pom</type>
 </dependency>
 ```
@@ -26,6 +26,8 @@ dependencies {
 ```xml
 <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+<!-- 触摸调整亮度需添加权限-->
+<uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 ```
 
 ### 设置播放页属性
