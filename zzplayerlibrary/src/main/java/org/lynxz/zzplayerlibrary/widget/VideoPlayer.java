@@ -13,12 +13,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -47,7 +50,7 @@ import java.util.TimerTask;
  */
 public class VideoPlayer extends RelativeLayout implements View.OnTouchListener {
 
-    private Context mContent;
+    private Context mContext;
     private PlayerTitleBar mTitleBar;
     private ZZVideoView mVv;
     private PlayerController mController;
@@ -102,6 +105,59 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         }
     };
     private FrameLayout mFlLoading;
+
+
+    private android.view.GestureDetector.OnGestureListener mGestureListener = new GestureDetector.OnGestureListener() {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            mCurrentDownTime = Calendar.getInstance().getTimeInMillis();
+            return true;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (isTouchEventValid()) {
+                mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
+                if (mController.getVisibility() == VISIBLE) {
+                    showOrHideBars(false, true);
+                } else {
+                    showOrHideBars(true, true);
+                }
+                mLastDownTime = mCurrentDownTime;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            final double FLING_MIN_VELOCITY = 0.5;
+            final double FLING_MIN_DISTANCE = 0.5;
+
+            if (e1.getY() - e2.getY() > FLING_MIN_DISTANCE
+                    && Math.abs(distanceY) > FLING_MIN_VELOCITY) {
+                setScreenBrightness(20);
+            }
+            if (e1.getY() - e2.getY() < FLING_MIN_DISTANCE
+                    && Math.abs(distanceY) > FLING_MIN_VELOCITY) {
+                setScreenBrightness(-20);
+            }
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return true;
+        }
+    };
+    private GestureDetector mGestureDetector;
 
     /**
      * 更新播放器状态
@@ -286,7 +342,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     }
 
     private void initView(Context context) {
-        mContent = context;
+        mContext = context;
         inflate(context, R.layout.zz_video_player, this);
         View rlPlayer = findViewById(R.id.rl_player);
         mVv = (ZZVideoView) findViewById(R.id.zzvv_main);
@@ -308,16 +364,20 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         //        mVv.setOnInfoListener(mInfoListener);
         mVv.setOnCompletionListener(mCompletionListener);
         mVv.setOnErrorListener(mErrorListener);
+
+
+        mGestureDetector = new GestureDetector(mContext, mGestureListener);
+        mVv.setOnTouchListener(this);
     }
 
     /**
      * 初始化标题栏/控制栏显隐动画效果
      */
     private void initAnimation() {
-        mEnterFromTop = AnimationUtils.loadAnimation(mContent, R.anim.enter_from_top);
-        mEnterFromBottom = AnimationUtils.loadAnimation(mContent, R.anim.enter_from_bottom);
-        mExitFromTop = AnimationUtils.loadAnimation(mContent, R.anim.exit_from_top);
-        mExitFromBottom = AnimationUtils.loadAnimation(mContent, R.anim.exit_from_bottom);
+        mEnterFromTop = AnimationUtils.loadAnimation(mContext, R.anim.enter_from_top);
+        mEnterFromBottom = AnimationUtils.loadAnimation(mContext, R.anim.enter_from_bottom);
+        mExitFromTop = AnimationUtils.loadAnimation(mContext, R.anim.exit_from_top);
+        mExitFromBottom = AnimationUtils.loadAnimation(mContext, R.anim.exit_from_bottom);
 
         mEnterFromTop.setAnimationListener(new AnimationImpl() {
             @Override
@@ -455,29 +515,29 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         startOrRestartPlay();
     }
 
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mCurrentDownTime = Calendar.getInstance().getTimeInMillis();
-                if (isTouchEventValid()) {
-                    mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
-                    if (mController.getVisibility() == VISIBLE) {
-                        showOrHideBars(false, true);
-                    } else {
-                        showOrHideBars(true, true);
-                    }
-                    mLastDownTime = mCurrentDownTime;
-                    return true;
-                }
-                break;
+            //            case MotionEvent.ACTION_DOWN:
+            //                mCurrentDownTime = Calendar.getInstance().getTimeInMillis();
+            //                if (isTouchEventValid()) {
+            //                    mHandler.removeMessages(MSG_AUTO_HIDE_BARS);
+            //                    if (mController.getVisibility() == VISIBLE) {
+            //                        showOrHideBars(false, true);
+            //                    } else {
+            //                        showOrHideBars(true, true);
+            //                    }
+            //                    mLastDownTime = mCurrentDownTime;
+            //                    //                    return true;
+            //                }
+            //                break;
             case MotionEvent.ACTION_UP:
                 sendAutoHideBarsMsg();
                 break;
         }
-        return false;
+        //        return false;
+        return mGestureDetector.onTouchEvent(event);
     }
 
 
@@ -629,7 +689,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      * 宿主页面onResume的时候从上次播放位置继续播放
      */
     public void onHostResume() {
-        Log.i(TAG, "onHostResume " + mLastPlayingPos);
+        //        Log.i(TAG, "onHostResume " + mLastPlayingPos);
         mNetworkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
         if (mLastPlayingPos >= 0) {
             // 进度条更新为上次播放时间
@@ -823,4 +883,28 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     }
 
 
+    /*设置当前屏幕亮度值 0--255，并使之生效*/
+    private void setScreenBrightness(float value) {
+        Activity activity = mHostActivity.get();
+        if (activity != null) {
+            WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+            lp.screenBrightness = lp.screenBrightness + value / 255.0f;
+            Vibrator vibrator;
+            if (lp.screenBrightness > 1) {
+                lp.screenBrightness = 1;
+                //              vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                //              long[] pattern = {10, 200}; // OFF/ON/OFF/ON...
+                //              vibrator.vibrate(pattern, -1);
+            } else if (lp.screenBrightness < 0.2) {
+                lp.screenBrightness = (float) 0.2;
+                //              vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                //              long[] pattern = {10, 200}; // OFF/ON/OFF/ON...
+                //              vibrator.vibrate(pattern, -1);
+            }
+            activity.getWindow().setAttributes(lp);
+        }
+
+        // 保存设置的屏幕亮度值
+        //        Settings.System.putInt(activity.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, (int) value);
+    }
 }
