@@ -85,6 +85,7 @@ public class ZZPlayerDemoActivity extends Activity {
         mVp.setProgressLayerDrawables(R.drawable.biz_video_progressbar);//自定义的layer-list
         // mVp.setProgressLayerDrawables(0, 0, R.drawable.shape_progress);//逐层设置,0的话表示保持默认
 
+        // mVp.setControlFlag(VideoPlayer.FLAG_DISABLE_VOLUME_CHANGE);
     }
 
 

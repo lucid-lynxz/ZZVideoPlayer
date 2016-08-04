@@ -10,7 +10,7 @@
 <dependency>
   <groupId>org.lynxz.zzplayerlibrarys</groupId>
   <artifactId>zzplayer</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <type>pom</type>
 </dependency>
 ```
@@ -18,7 +18,7 @@
 ```gradle
 dependencies {
     ......
-    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.3'
+    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.4'
 }
 ```
 
@@ -85,6 +85,14 @@ mVp.setIconShrink(R.drawable.shrink);
 mVp.setProgressThumbDrawable(R.drawable.progress_thumb);
 mVp.setProgressLayerDrawables(R.drawable.biz_video_progressbar);//自定义的layer-list
 // mVp.setProgressLayerDrawables(0, 0, R.drawable.shape_progress);//逐层设置,0的话表示保持默认,具体请参考方法注释
+
+// 是否允许滑动调整音量,默认enable
+mVp.setControlFlag(VideoPlayer.FLAG_ENABLE_VOLUME_CHANGE);
+mVp.setControlFlag(VideoPlayer.FLAG_DISABLE_VOLUME_CHANGE);
+
+// 是否允许滑动调整亮度,默认enable
+mVp.setControlFlag(VideoPlayer.FLAG_ENABLE_BRIGHTNESS_CHANGE);
+mVp.setControlFlag(VideoPlayer.FLAG_DISABLE_BRIGHTNESS_CHANGE);
 ```
 
 ### 实现IPlayerImpl控制类

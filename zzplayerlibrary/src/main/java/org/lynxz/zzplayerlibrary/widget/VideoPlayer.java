@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -79,6 +80,16 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private static final int MSG_UPDATE_PROGRESS_TIME = 1;//更新播放进度时间
     private static final int MSG_AUTO_HIDE_BARS = 2;//隐藏标题栏和控制条
 
+
+    private double FLING_MIN_VELOCITY = 5;
+    private double FLING_MIN_DISTANCE = 10;
+    private double MIN_CHANGE_VOLUME_DISTANCE = FLING_MIN_DISTANCE * 10;
+
+    public static final int FLAG_ENABLE_VOLUME_CHANGE = 1;//允许改变音量
+    public static final int FLAG_DISABLE_VOLUME_CHANGE = 2;//禁止调节音量
+    public static final int FLAG_ENABLE_BRIGHTNESS_CHANGE = 3;//允许改变亮度
+    public static final int FLAG_DISABLE_BRIGHTNESS_CHANGE = 4;//禁止调节亮度
+
     private Timer mUpdateTimer = null;
 
     private WeakReference<Activity> mHostActivity;
@@ -105,12 +116,13 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         }
     };
     private FrameLayout mFlLoading;
-
+    private float lastDownY = 0;
 
     private android.view.GestureDetector.OnGestureListener mGestureListener = new GestureDetector.OnGestureListener() {
         @Override
         public boolean onDown(MotionEvent e) {
             mCurrentDownTime = Calendar.getInstance().getTimeInMillis();
+            lastDownY = e.getY();
             return true;
         }
 
@@ -134,17 +146,37 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            final double FLING_MIN_VELOCITY = 0.5;
-            final double FLING_MIN_DISTANCE = 0.5;
+            int width = mRlPlayerContainer.getWidth();
+            int top = mRlPlayerContainer.getTop();
+            int left = mRlPlayerContainer.getLeft();
+            int bottom = mRlPlayerContainer.getBottom();
 
-            if (e1.getY() - e2.getY() > FLING_MIN_DISTANCE
-                    && Math.abs(distanceY) > FLING_MIN_VELOCITY) {
-                setScreenBrightness(20);
+            if (e2.getY() <= top || e2.getY() >= bottom) {
+                return false;
             }
-            if (e1.getY() - e2.getY() < FLING_MIN_DISTANCE
-                    && Math.abs(distanceY) > FLING_MIN_VELOCITY) {
-                setScreenBrightness(-20);
+
+            float deltaY = lastDownY - e2.getY();
+            // Log.i(TAG, "onScroll deltaY = " + deltaY + "  ,lastDownY= " + lastDownY + ",e2.getY() = " + e2.getY());
+            if (e1.getX() < left + width / 2) {//调整亮度
+                if (deltaY > FLING_MIN_DISTANCE
+                        && Math.abs(distanceY) > FLING_MIN_VELOCITY) {
+                    setScreenBrightness(20);
+                } else if (deltaY < -1 * FLING_MIN_DISTANCE
+                        && Math.abs(distanceY) > FLING_MIN_VELOCITY) {
+                    setScreenBrightness(-20);
+                } else {
+                    return false;
+                }
+            } else {//调整音量
+                if (deltaY > MIN_CHANGE_VOLUME_DISTANCE) {
+                    setVoiceVolume(true);
+                } else if (deltaY < MIN_CHANGE_VOLUME_DISTANCE * -1) {
+                    setVoiceVolume(false);
+                } else {
+                    return false;
+                }
             }
+            lastDownY = e2.getY();
             return true;
         }
 
@@ -158,6 +190,10 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         }
     };
     private GestureDetector mGestureDetector;
+    private View mRlPlayerContainer;
+    private AudioManager mAudioManager;
+    private boolean mEnableAdjustBrightness = true;
+    private boolean mEnableAdjustVolume = true;
 
     /**
      * 更新播放器状态
@@ -344,7 +380,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private void initView(Context context) {
         mContext = context;
         inflate(context, R.layout.zz_video_player, this);
-        View rlPlayer = findViewById(R.id.rl_player);
+        mRlPlayerContainer = findViewById(R.id.rl_player);
         mVv = (ZZVideoView) findViewById(R.id.zzvv_main);
         mTitleBar = (PlayerTitleBar) findViewById(R.id.pt_title_bar);
         mController = (PlayerController) findViewById(R.id.pc_controller);
@@ -359,15 +395,16 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         //        mVv.setZOrderOnTop(true);
         //        mVv.setBackgroundColor(Color.RED);
         mVv.setOnTouchListener(this);
-        rlPlayer.setOnTouchListener(this);
+        mRlPlayerContainer.setOnTouchListener(this);
         mVv.setOnPreparedListener(mPreparedListener);
         //        mVv.setOnInfoListener(mInfoListener);
         mVv.setOnCompletionListener(mCompletionListener);
         mVv.setOnErrorListener(mErrorListener);
 
-
         mGestureDetector = new GestureDetector(mContext, mGestureListener);
-        mVv.setOnTouchListener(this);
+        mRlPlayerContainer.setOnTouchListener(this);
+
+        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
     /**
@@ -534,6 +571,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             //                break;
             case MotionEvent.ACTION_UP:
                 sendAutoHideBarsMsg();
+                lastDownY = 0;
                 break;
         }
         //        return false;
@@ -885,6 +923,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /*设置当前屏幕亮度值 0--255，并使之生效*/
     private void setScreenBrightness(float value) {
+        if (!mEnableAdjustBrightness) {
+            return;
+        }
         Activity activity = mHostActivity.get();
         if (activity != null) {
             WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
@@ -907,4 +948,51 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         // 保存设置的屏幕亮度值
         //        Settings.System.putInt(activity.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, (int) value);
     }
+
+    private void setVoiceVolume(boolean volumeUp) {
+        if (!mEnableAdjustVolume) {
+            return;
+        }
+
+        //        int currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        //        int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        //        int flag = volumeUp ? 1 : -1;
+        //        currentVolume += flag * 1;
+        //        if (currentVolume >= maxVolume) {
+        //            currentVolume = maxVolume;
+        //        } else if (currentVolume <= 1) {
+        //            currentVolume = 1;
+        //        }
+        //        Log.i(TAG, "setVoiceVolume currentVolume = " + currentVolume + " ,maxVolume = " + maxVolume);
+        //        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+
+        //降低音量，调出系统音量控制
+        if (volumeUp) {
+            mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE,
+                    AudioManager.FX_FOCUS_NAVIGATION_UP);
+        } else {//增加音量，调出系统音量控制
+            mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER,
+                    AudioManager.FX_FOCUS_NAVIGATION_UP);
+        }
+    }
+
+    /**
+     * 设置是否允许调整音量/亮度
+     *
+     * @param flag {@linkplain #FLAG_DISABLE_BRIGHTNESS_CHANGE 禁止调整亮度} / {@linkplain #FLAG_ENABLE_BRIGHTNESS_CHANGE 允许调整亮度}
+     *             /{@linkplain #FLAG_DISABLE_VOLUME_CHANGE 禁止调整音量} / {@linkplain #FLAG_ENABLE_VOLUME_CHANGE 允许调整音量}
+     */
+    public void setControlFlag(int flag) {
+        if (flag == FLAG_ENABLE_BRIGHTNESS_CHANGE) {
+            mEnableAdjustBrightness = true;
+        } else if (flag == FLAG_DISABLE_BRIGHTNESS_CHANGE) {
+            mEnableAdjustBrightness = false;
+        } else if (flag == FLAG_ENABLE_VOLUME_CHANGE) {
+            mEnableAdjustVolume = true;
+        } else if (flag == FLAG_DISABLE_VOLUME_CHANGE) {
+            mEnableAdjustVolume = false;
+        }
+
+    }
+
 }
