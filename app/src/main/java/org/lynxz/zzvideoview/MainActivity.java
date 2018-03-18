@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import org.lynxz.zzplayerlibrary.widget.VideoPlayer;
 
@@ -27,9 +26,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initView() {
-        Button btnCustom = (Button) findViewById(R.id.btn_custom);
-
-        btnCustom.setOnClickListener(this);
+        findViewById(R.id.btn_custom).setOnClickListener(this);
     }
 
 

@@ -61,8 +61,8 @@ public class ZZPlayerDemoActivity extends Activity {
     }
 
     private void initData() {
-        //        mVideoUrl = "android.resource://" + getPackageName() + "/" + R.raw.shuai_dan_ge;
-        mVideoUrl = "http://hometime-img-service.b0.upaiyun.com/1703070530554567833.mp4";
+        mVideoUrl = "android.resource://" + getPackageName() + "/" + R.raw.shuai_dan_ge;
+//        mVideoUrl = "http://hometime-img-service.b0.upaiyun.com/1703070530554567833.mp4";
     }
 
     private void initView() {
