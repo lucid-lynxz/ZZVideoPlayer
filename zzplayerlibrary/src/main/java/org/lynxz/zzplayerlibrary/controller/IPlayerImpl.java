@@ -1,7 +1,7 @@
 package org.lynxz.zzplayerlibrary.controller;
 
 /**
- * Created by zxz on 2016/5/3.
+ * Created by lynxz on 2016/5/3.
  */
 public abstract class IPlayerImpl {
 
@@ -33,6 +33,4 @@ public abstract class IPlayerImpl {
     public void onError() {
 
     }
-
-
 }

@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by zxz on 2016/4/28.
+ * Created by lynxz on 2016/4/28.
  */
 public class PlayerController extends FrameLayout implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private IControllerImpl mControllerImpl;

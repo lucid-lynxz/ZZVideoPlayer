@@ -6,7 +6,7 @@ import org.lynxz.zzplayerlibrary.BuildConfig;
 
 
 /**
- * Created by zxz on 2016/4/28.
+ * Created by lynxz on 2016/4/28.
  */
 public class DebugLog {
     public static void i(String tag, String msg) {

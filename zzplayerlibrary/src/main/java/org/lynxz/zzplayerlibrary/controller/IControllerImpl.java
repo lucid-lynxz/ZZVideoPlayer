@@ -1,7 +1,7 @@
 package org.lynxz.zzplayerlibrary.controller;
 
 /**
- * Created by zxz on 2016/4/28.
+ * Created by lynxz on 2016/4/28.
  * 控制栏功能回调
  */
 public interface IControllerImpl {

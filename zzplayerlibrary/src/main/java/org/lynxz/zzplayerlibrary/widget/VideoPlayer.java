@@ -47,7 +47,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Created by zxz on 2016/4/28.
+ * Created by lynxz on 2016/4/28.
  */
 public class VideoPlayer extends RelativeLayout implements View.OnTouchListener {
 
@@ -472,7 +472,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                 return;
             }
             mVv.setVideoPath(mVideoUri.toString());
-        } else if (VideoUriProtocol.PROTOCOL_ANDROID_RESOURCE.equalsIgnoreCase(mVideoProtocol)) {
+//        } else if (VideoUriProtocol.PROTOCOL_ANDROID_RESOURCE.equalsIgnoreCase(mVideoProtocol)) {
+        } else {
             mVv.setVideoURI(mVideoUri);
         }
         mHasSetPath2vv = true;

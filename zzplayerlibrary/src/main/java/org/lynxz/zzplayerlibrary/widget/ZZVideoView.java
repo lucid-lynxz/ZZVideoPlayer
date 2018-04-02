@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.widget.VideoView;
 
 /**
- * Created by zxz on 2016/4/28.
+ * Created by lynxz on 2016/4/28.
  */
 public class ZZVideoView extends VideoView {
 

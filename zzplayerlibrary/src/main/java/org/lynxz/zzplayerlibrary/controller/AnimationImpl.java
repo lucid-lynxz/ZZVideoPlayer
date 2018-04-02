@@ -3,7 +3,7 @@ package org.lynxz.zzplayerlibrary.controller;
 import android.view.animation.Animation;
 
 /**
- * Created by zxz on 2016/5/3.
+ * Created by lynxz on 2016/5/3.
  */
 public class AnimationImpl implements Animation.AnimationListener {
     @Override

@@ -6,7 +6,7 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 /**
- * Created by zxz on 2016/5/3.
+ * Created by lynxz on 2016/5/3.
  */
 public class NetworkUtil {
     /**

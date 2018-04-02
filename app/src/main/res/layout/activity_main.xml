@@ -12,6 +12,19 @@
         android:id="@+id/btn_custom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="自定义player"/>
+        android:text="播放在线视频"/>
+
+    <Button
+        android:id="@+id/btn_custom_raw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="播放项目raw视频"/>
+
+
+    <Button
+        android:id="@+id/btn_custom_local"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="播放项目手机sd卡视频"/>
 
 </LinearLayout>

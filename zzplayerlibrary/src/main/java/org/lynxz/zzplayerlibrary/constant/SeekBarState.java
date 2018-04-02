@@ -1,7 +1,7 @@
 package org.lynxz.zzplayerlibrary.constant;
 
 /**
- * Created by zxz on 2016/5/3.
+ * Created by lynxz on 2016/5/3.
  * 进度条拖动状态
  */
 public interface SeekBarState {

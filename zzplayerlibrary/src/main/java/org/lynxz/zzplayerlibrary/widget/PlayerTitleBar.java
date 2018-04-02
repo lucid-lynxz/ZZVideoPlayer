@@ -14,7 +14,7 @@ import org.lynxz.zzplayerlibrary.controller.ITitleBarImpl;
 
 
 /**
- * Created by zxz on 2016/4/28.
+ * Created by lynxz on 2016/4/28.
  */
 public class PlayerTitleBar extends LinearLayout implements View.OnClickListener {
 

@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import android.widget.SeekBar;
 
 /**
- * Created by zxz on 2016/5/3.
+ * Created by lynxz on 2016/5/3.
  * 增加方法:是否可被拖动
  */
 public class CustomSeekBar extends SeekBar {
