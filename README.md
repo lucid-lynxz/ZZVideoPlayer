@@ -14,7 +14,7 @@
 <dependency>
   <groupId>org.lynxz.zzplayerlibrarys</groupId>
   <artifactId>zzplayer</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.8</version>
   <type>pom</type>
 </dependency>
 ```
@@ -22,7 +22,7 @@
 ```gradle
 dependencies {
     ......
-    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.6'
+    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.8'
 }
 ```
 
