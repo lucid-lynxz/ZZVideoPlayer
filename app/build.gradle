@@ -30,14 +30,9 @@ dependencies {
     implementation(libs.rxJava2)
     implementation(libs.rxAndroid2)
     implementation(libs.rxPermission2)
-//    compile('com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0') {
-//        exclude group: 'com.android.support', module: 'appcompat-v7'
-//        exclude group: 'com.android.support', module: 'support-v4'
-//    }
-    implementation('com.github.dcendents:android-maven-plugin:1.2') {
-        exclude group: 'com.android.support', module: 'appcompat-v7'
-        exclude group: 'com.android.support', module: 'support-v4'
-    }
+
+    // 开发调试用
     implementation project(':zzplayerlibrary')
-//    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.4'
+    // 测试使用发布版本
+    // compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.8'
 }

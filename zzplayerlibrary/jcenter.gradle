@@ -13,7 +13,8 @@ publish {
     userOrg = 'lucid-lynxz'
     groupId = 'org.lynxz.zzplayerlibrarys' // 填包名就好
     artifactId = 'zzplayer'  // bintray中对应的packagename
-    publishVersion = '1.0.7' // 发布版本号
+    uploadName = 'ZZPlayer'
+    publishVersion = '1.0.8' // 发布版本号
     desc = '修复不能播放本地视频的bug'
     website = 'https://github.com/lucid-lynxz/ZZVideoPlayer'
 }
