@@ -1,6 +1,6 @@
 [博客地址](https://juejin.im/post/5a433b236fb9a045293708be)
 
-# 注意: 若要测试播放本地视频,请先将项目中的 `app/src/main/res/raw/shuai_dan_ge.mp4` 拷贝到手机sd卡目录下
+### 注意: 若要测试播放本地视频,请先将项目中的 `app/src/main/res/raw/shuai_dan_ge.mp4` 拷贝到手机sd卡目录下
 
 # 简易视频播放器
 封装了系统VideoView,主要进行了网络异常处理以及进度条拖动/横竖屏切换功能,
