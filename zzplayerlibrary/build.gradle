@@ -1,15 +1,22 @@
 apply plugin: 'com.android.library'
+apply from: "./jcenter.gradle"
+apply from: "../config/dependencies.gradle"
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 25
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
         versionCode 1
         versionName "1.0"
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -19,18 +26,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation(libs.appcompat)
 }
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
-    }
-}
-
-//apply from: 'bintray.gradle'

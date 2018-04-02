@@ -23,21 +23,21 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile(libs.appcompat)
-    compile(libs.kotlin)
-    compile(libs.rxJava2)
-    compile(libs.rxAndroid2)
-    compile(libs.rxPermission2)
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation(test.junit)
+    implementation(libs.appcompat)
+    implementation(libs.kotlin)
+    implementation(libs.rxJava2)
+    implementation(libs.rxAndroid2)
+    implementation(libs.rxPermission2)
 //    compile('com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0') {
 //        exclude group: 'com.android.support', module: 'appcompat-v7'
 //        exclude group: 'com.android.support', module: 'support-v4'
 //    }
-    compile('com.github.dcendents:android-maven-plugin:1.2') {
+    implementation('com.github.dcendents:android-maven-plugin:1.2') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'com.android.support', module: 'support-v4'
     }
-    compile project(':zzplayerlibrary')
+    implementation project(':zzplayerlibrary')
 //    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.4'
 }

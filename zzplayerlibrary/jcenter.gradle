@@ -1,0 +1,20 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+    // 读取配置的信息
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    bintrayUser = properties.getProperty('user') // 用户名
+    bintrayKey = properties.getProperty('apikey') // bintray 的 apikey ,可以在通过账户信息的 edit profile 中查询得到
+    dryRun = false
+
+    userOrg = 'lucid-lynxz'
+    groupId = 'org.lynxz.zzplayerlibrarys' // 填包名就好
+    artifactId = 'zzplayer'  // bintray中对应的packagename
+    publishVersion = '1.0.7' // 发布版本号
+    desc = '修复不能播放本地视频的bug'
+    website = 'https://github.com/lucid-lynxz/ZZVideoPlayer'
+}
+

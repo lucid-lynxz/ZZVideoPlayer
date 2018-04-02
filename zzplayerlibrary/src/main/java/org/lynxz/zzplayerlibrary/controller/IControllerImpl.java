@@ -12,6 +12,9 @@ public interface IControllerImpl {
 
     /**
      * 进度条被用户拖动时触发
+     *
+     * @param state    {@link  org.lynxz.zzplayerlibrary.constant.SeekBarState}
+     * @param progress 当前进度
      */
     void onProgressChange(int state, int progress);
 

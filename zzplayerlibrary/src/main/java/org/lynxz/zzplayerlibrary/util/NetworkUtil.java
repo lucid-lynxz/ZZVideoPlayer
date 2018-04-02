@@ -12,6 +12,7 @@ public class NetworkUtil {
     /**
      * 网络是否可用
      *
+     * @param cxt 非空上下文
      * @return true-有网络
      */
     public static boolean isNetworkAvailable(@NonNull Context cxt) {

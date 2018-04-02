@@ -102,6 +102,8 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置控制条功能回调
+     *
+     * @param controllerImpl 控制栏功能回调
      */
     public void setControllerImpl(IControllerImpl controllerImpl) {
         this.mControllerImpl = controllerImpl;
@@ -185,6 +187,9 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     /**
      * 更新播放进度
      * 参考 {@link #updateProgress(int, int, int)}
+     *
+     * @param progress       当前播放进度
+     * @param secondProgress 当前缓冲进度
      */
     public void updateProgress(int progress, int secondProgress) {
         updateProgress(progress, secondProgress, mDuration);
@@ -193,6 +198,10 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     /**
      * 更新播放进度
      * 参考 {@link #updateProgress(int, int, int, boolean)}
+     *
+     * @param progress       播放进度
+     * @param secondProgress 缓冲进度
+     * @param maxValue       进度条最大值
      */
     public void updateProgress(int progress, int secondProgress, int maxValue) {
         updateProgress(progress, secondProgress, maxValue, mUserOperateSeecbar);
@@ -256,6 +265,8 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置暂停按钮图标
+     *
+     * @param iconPause 暂停按钮图标
      */
     public void setIconPause(@DrawableRes int iconPause) {
         this.iconPause = iconPause;
@@ -266,6 +277,8 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置播放按钮图标
+     *
+     * @param iconPlay 暂停按钮图标资源id
      */
     public void setIconPlay(@DrawableRes int iconPlay) {
         this.iconPlay = iconPlay;
@@ -276,6 +289,8 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置退出全屏按钮
+     *
+     * @param iconShrink 退出全屏的图标资源
      */
     public void setIconShrink(@DrawableRes int iconShrink) {
         this.iconShrink = iconShrink;
@@ -286,6 +301,8 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置退出全屏按钮
+     *
+     * @param iconExpand 退出全屏的图标
      */
     public void setIconExpand(@DrawableRes int iconExpand) {
         this.iconExpand = iconExpand;
@@ -300,7 +317,7 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
      *
      * @param resId 进度条progressDrawable分层资源
      *              数组表示的进度资源分别为 background - secondaryProgress - progress
-     *              若对应的数组元素值 <=0,表示该层素材保持不变;
+     *              若对应的数组元素值小于等于0,表示该层素材保持不变;
      *              注意:progress和secondaryProgress的shape资源需要做成clip的,否则会直接完全显示
      */
     public void setProgressLayerDrawables(@DrawableRes int... resId) {
@@ -319,6 +336,9 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
         }
     }
 
+    /**
+     * @param resId 进度条样式
+     */
     public void setProgressLayerDrawables(@DrawableRes int resId) {
         if (mCsb != null) {
             Drawable drawable;
@@ -333,6 +353,8 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
 
     /**
      * 设置进度条按钮图片
+     *
+     * @param thumbId 进度条按钮图片
      */
     public void setProgressThumbDrawable(@DrawableRes int thumbId) {
         if (thumbId > 0) {

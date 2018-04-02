@@ -349,6 +349,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /**
      * 播放器控制功能对外开放接口,包括返回按钮,播放等...
+     *
+     * @param IPlayerImpl 播放器控制功能实现
      */
     public void setPlayerController(IPlayerImpl IPlayerImpl) {
         mIPlayerImpl = IPlayerImpl;
@@ -448,8 +450,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /**
      * 设置视频标题
+     * @param title 视频标题字符串
      */
-
     public void setTitle(String title) {
         mTitleBar.setTitle(title);
     }
@@ -532,8 +534,10 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      * 设置视频播放路径
      * 1. 设置当前项目中res/raw目录中的文件: "android.resource://" + getPackageName() + "/" + R.raw.yourName
      * 2. 设置网络视频文件: "http:\//****\/abc.mp4"
+     * 3. 设置本机视频文件: "file:///sdcard/your_local_file.mp4"
      *
-     * @param path
+     * @param act  非空上下文
+     * @param path 视频资源路径
      */
     public void setVideoUri(@NonNull Activity act, @NonNull String path) {
         mHostActivity = new WeakReference<Activity>(act);
@@ -547,6 +551,10 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         registerNetworkReceiver();
     }
 
+    /**
+     * @param act  视频播放控件所在的activity
+     * @param path 视频资源uri路径
+     */
     public void loadAndStartVideo(@NonNull Activity act, @NonNull String path) {
         setVideoUri(act, path);
         load();
@@ -596,6 +604,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /**
      * 直接显隐标题栏和控制栏
+     *
+     * @param show true-显示, false-隐藏
      */
     private void forceShowOrHideBars(boolean show) {
         mTitleBar.clearAnimation();
@@ -612,6 +622,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /**
      * 带动画效果的显隐标题栏和控制栏
+     *
+     * @param show true-显示, false-隐藏
      */
     private void animateShowOrHideBars(boolean show) {
         mTitleBar.clearAnimation();
@@ -632,14 +644,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /**
      * 判断连续两次触摸事件间隔是否符合要求,避免快速点击等问题
-     *
-     * @return
      */
     private boolean isTouchEventValid() {
-        if (mCurrentDownTime - mLastDownTime >= MIN_CLICK_INTERVAL) {
-            return true;
-        }
-        return false;
+        return mCurrentDownTime - mLastDownTime >= MIN_CLICK_INTERVAL;
     }
 
     private void resetUpdateTimer() {
@@ -832,6 +839,9 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mController.setProgressLayerDrawables(resId);
     }
 
+    /**
+     * @param resId 进度条progressDrawable分层资源
+     */
     public void setProgressLayerDrawables(@DrawableRes int resId) {
         mController.setProgressLayerDrawables(resId);
 
@@ -840,7 +850,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     /**
      * 设置进度条按钮图片
      *
-     * @param thumbId
+     * @param thumbId 进度条按钮图片
      */
     public void setProgressThumbDrawable(@DrawableRes int thumbId) {
         mController.setProgressThumbDrawable(thumbId);
@@ -849,7 +859,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     /**
      * 设置暂停按钮图标
      *
-     * @param iconPause
+     * @param iconPause 暂停按钮图标
      */
     public void setIconPause(@DrawableRes int iconPause) {
         mController.setIconPause(iconPause);
@@ -858,7 +868,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     /**
      * 设置播放按钮图标
      *
-     * @param iconPlay
+     * @param iconPlay 播放按钮图标
      */
     public void setIconPlay(@DrawableRes int iconPlay) {
         mController.setIconPlay(iconPlay);
@@ -867,7 +877,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     /**
      * 设置退出全屏按钮
      *
-     * @param iconShrink
+     * @param iconShrink 退出全屏按钮
      */
     public void setIconShrink(@DrawableRes int iconShrink) {
         mController.setIconShrink(iconShrink);
@@ -876,7 +886,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     /**
      * 设置退出全屏按钮
      *
-     * @param iconExpand
+     * @param iconExpand 退出全屏按钮
      */
     public void setIconExpand(@DrawableRes int iconExpand) {
         mController.setIconExpand(iconExpand);
@@ -884,6 +894,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     /**
      * 设置加载提示框图标资源
+     *
+     * @param iconLoading 加载提示框图标资源
      */
     public void setIconLoading(@DrawableRes int iconLoading) {
         if (Build.VERSION.SDK_INT >= 21) {
