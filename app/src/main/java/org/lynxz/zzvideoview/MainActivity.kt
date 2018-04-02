@@ -1,19 +1,17 @@
 package org.lynxz.zzvideoview
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import com.tbruyelle.rxpermissions2.RxPermissions
+import kotlinx.android.synthetic.main.activity_main.*
 
-import org.lynxz.zzplayerlibrary.widget.VideoPlayer
-
-class MainActivity : Activity(), View.OnClickListener {
-
-    private val mVp: VideoPlayer? = null
-    private val mVideoUrl: String? = null
-
+class MainActivity : Activity() {
+    private val rxPermission by lazy { RxPermissions(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)//隐藏标题
@@ -25,24 +23,45 @@ class MainActivity : Activity(), View.OnClickListener {
     }
 
     private fun initView() {
-        findViewById(R.id.btn_custom).setOnClickListener(this)
-        findViewById(R.id.btn_custom_raw).setOnClickListener(this)
-        findViewById(R.id.btn_custom_local).setOnClickListener(this)
+        btn_custom.setOnClickListener { playOnlineVideo() }
+        btn_custom_raw.setOnClickListener { playRawVideo() }
+        btn_custom_local.setOnClickListener { playLocalVideo() }
     }
 
+    /**
+     * 播放项目自带的raw视频文件
+     * */
+    private fun playRawVideo() {
+        startActivity(Intent(this, ZZPlayerDemoActivity::class.java)
+                .putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_RAW))
+    }
 
-    override fun onClick(v: View) {
-        val id = v.id
-        var intent: Intent? = Intent(this, ZZPlayerDemoActivity::class.java)
-        when (id) {
-            R.id.btn_custom -> intent!!.putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_URL)
-            R.id.btn_custom_local -> intent!!.putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_LOCAL)
-            R.id.btn_custom_raw -> intent!!.putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_RAW)
-            else -> intent = null
-        }
+    /**
+     * 播放在线视频(url,需要Internet权限)
+     * */
+    private fun playOnlineVideo() {
+        startActivity(Intent(this, ZZPlayerDemoActivity::class.java)
+                .putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_URL))
+    }
 
-        if (intent != null) {
-            startActivity(intent)
+    /**
+     * 播放本机视频,需要sd卡权限
+     * */
+    private fun playLocalVideo() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            rxPermission.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .subscribe({
+                        if (it) {
+                            startActivity(Intent(this, ZZPlayerDemoActivity::class.java)
+                                    .putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_LOCAL))
+                        } else {
+                            showToast("没有sd卡权限")
+                        }
+
+                    }, { it.printStackTrace() })
+        } else {
+            startActivity(Intent(this, ZZPlayerDemoActivity::class.java)
+                    .putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_LOCAL))
         }
     }
 }

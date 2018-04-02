@@ -4,26 +4,23 @@ import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Environment
-import android.text.TextUtils
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Toast
-
+import kotlinx.android.synthetic.main.activity_custom_player_demo.*
 import org.lynxz.zzplayerlibrary.controller.IPlayerImpl
 import org.lynxz.zzplayerlibrary.util.OrientationUtil
 import org.lynxz.zzplayerlibrary.widget.VideoPlayer
-
 import java.io.File
 
 class ZZPlayerDemoActivity : Activity() {
 
     private var mVp: VideoPlayer? = null
-    private var mVideoUrl = "http://hometime-img-service.b0.upaiyun.com/1703070530554567833.mp4"
+    private var mVideoUrl = ""
     private var mVideoType: Int = 0
 
     private val playerImpl = object : IPlayerImpl() {
         override fun onNetWorkError() {
-            showToast(null)
+            showToast(R.string.zz_player_network_invalid)
         }
 
         override fun onBack() {
@@ -56,7 +53,7 @@ class ZZPlayerDemoActivity : Activity() {
     }
 
     private fun initListener() {
-        mVp!!.setPlayerController(playerImpl)
+        mVp?.setPlayerController(playerImpl)
     }
 
     private fun initData() {
@@ -70,7 +67,6 @@ class ZZPlayerDemoActivity : Activity() {
                     val video = File(videoPath)
                     if (video.exists()) {
                         mVideoUrl = "file://$videoPath"
-                        return
                     }
                 }
             }
@@ -78,63 +74,53 @@ class ZZPlayerDemoActivity : Activity() {
     }
 
     private fun initView() {
-        mVp = findViewById(R.id.vp) as VideoPlayer
-        mVp!!.setTitle("视频名称")
-        mVp!!.loadAndStartVideo(this, mVideoUrl)
-        //设置控制栏播放/暂停/全屏/退出全屏按钮图标
-        mVp!!.setIconPlay(R.drawable.play)
-        mVp!!.setIconPause(R.drawable.pause)
-        mVp!!.setIconExpand(R.drawable.expand)
-        mVp!!.setIconShrink(R.drawable.shrink)
-        //隐藏/显示控制栏时间值信息
-        // mVp.hideTimes();
-        // mVp.showTimes();
-        // 自定义加载框图标
-        mVp!!.setIconLoading(R.drawable.loading_red)
+        vp.apply {
+            setTitle("视频名称")
+            loadAndStartVideo(this@ZZPlayerDemoActivity, mVideoUrl)
+            //设置控制栏播放/暂停/全屏/退出全屏按钮图标
+            setIconPlay(R.drawable.play)
+            setIconPause(R.drawable.pause)
+            setIconExpand(R.drawable.expand)
+            setIconShrink(R.drawable.shrink)
+            //隐藏/显示控制栏时间值信息
+            // hideTimes();
+            // showTimes();
+            // 自定义加载框图标
+            setIconLoading(R.drawable.loading_red)
 
-        // 设置进度条样式
-        mVp!!.setProgressThumbDrawable(R.drawable.progress_thumb)
-        mVp!!.setProgressLayerDrawables(R.drawable.biz_video_progressbar)//自定义的layer-list
-        // mVp.setProgressLayerDrawables(0, 0, R.drawable.shape_progress);//逐层设置,0的话表示保持默认
-
-        // mVp.setControlFlag(VideoPlayer.FLAG_DISABLE_VOLUME_CHANGE);
+            // 设置进度条样式
+            setProgressThumbDrawable(R.drawable.progress_thumb)
+            setProgressLayerDrawables(R.drawable.biz_video_progressbar)//自定义的layer-list
+            // setProgressLayerDrawables(0, 0, R.drawable.shape_progress);//逐层设置,0的话表示保持默认
+            // setControlFlag(VideoPlayer.FLAG_DISABLE_VOLUME_CHANGE);
+        }
     }
 
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if (mVp != null) {
-            mVp!!.updateActivityOrientation()
-        }
+        mVp?.updateActivityOrientation()
     }
 
-
-    private fun showToast(msg: String?) {
-        var msg = msg
-        if (TextUtils.isEmpty(msg)) {
-            msg = resources.getString(R.string.zz_player_network_invalid)
-        }
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-    }
 
     override fun onResume() {
         super.onResume()
-        mVp!!.onHostResume()
+        mVp?.onHostResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mVp!!.onHostPause()
+        mVp?.onHostPause()
     }
 
     override fun onBackPressed() {
-        mVp!!.onHostDestroy()
+        mVp?.onHostDestroy()
         finish()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mVp!!.onHostDestroy()
+        mVp?.onHostDestroy()
     }
 
     companion object {

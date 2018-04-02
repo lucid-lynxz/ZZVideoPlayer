@@ -1,3 +1,5 @@
+注意: 若要测试播放本地视频,请先将项目中的 `app/src/main/res/raw/shuai_dan_ge.mp4` 拷贝到手机sd卡目录下
+
 # 简易视频播放器
 封装了系统VideoView,主要进行了网络异常处理以及进度条拖动/横竖屏切换功能,
 并且当用户切换到桌面或其他app后再返回,会从中断的位置继续播放
@@ -23,12 +25,8 @@ dependencies {
 ```
 
 ### 播放网络视频添加权限
-```xml
-<uses-permission android:name="android.permission.INTERNET"/>
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-<!-- 触摸调整亮度需添加权限-->
-<uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-```
+目前所需权限(`INTERNET`, `WRITE_SETTINGS`, `READ_EXTERNAL_STORAGE`, `ACCESS_NETWORK_STATE` 等) 已在 `zzplayerlibrary/src/main/AndroidManifest.xml` 中申明了;
+app层请自行按需动态申请  `READ_EXTERNAL_STORAGE` 等权限即可;
 
 ### 设置播放页属性
 ```xml
@@ -51,8 +49,9 @@ dependencies {
 ### 视频路径
 ```java
 //工程文件内的视频文件以及网络视频地址
-//mVideoUrl = "android.resource://" + getPackageName() + "/" + R.raw.shuai_dan_ge;
-mVideoUrl = "http://7xt0mj.com2.z0.glb.clouddn.com/lianaidaren.v.640.480.mp4";
+// mVideoUrl = "android.resource://" + getPackageName() + "/" + R.raw.shuai_dan_ge; // raw视频
+// mVideoUrl = "file:///storage/emulated/0/shuai_dan_ge.mp4"; // 本机sd卡视频
+mVideoUrl = "http://hometime-img-service.b0.upaiyun.com/1703070530554567833.mp4";
 ```
 
 ### 设置

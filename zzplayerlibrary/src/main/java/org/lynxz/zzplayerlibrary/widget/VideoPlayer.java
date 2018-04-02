@@ -311,7 +311,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             Log.e(TAG, "MediaPlayer.OnErrorListener what = " + what + " , extra = " + extra + " ,mNetworkAvailable:" + mNetworkAvailable + " ,mCurrentPlayState:" + mCurrentPlayState);
             if (mCurrentPlayState != PlayState.ERROR) {
                 //  判断网络状态,如果有网络,则重新加载播放,如果没有则报错
-                if ((mIsOnlineSource && mNetworkAvailable) || !mIsOnlineSource) {
+                if (!mIsOnlineSource || mNetworkAvailable) {
                     startOrRestartPlay();
                 } else {
                     if (mIPlayerImpl != null) {
