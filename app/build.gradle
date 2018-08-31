@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: '../config/sign.gradle'
 
 android {
     compileSdkVersion androidCompileSdkVersion
@@ -16,6 +17,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -31,7 +33,7 @@ dependencies {
     implementation(libs.rxPermission2)
 
     // 开发调试用
-    implementation project(':zzplayerlibrary')
+//    implementation project(':zzplayerlibrary')
     // 测试使用发布版本
-    // implementation 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.8'
+    implementation 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.9'
 }

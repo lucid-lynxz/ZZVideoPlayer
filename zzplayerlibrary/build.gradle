@@ -12,6 +12,23 @@ android {
         versionName "1.0"
     }
 
+    libraryVariants.all { variant ->
+        task("generate${variant.name}Javadoc", type: Javadoc) {
+            description "Generates Javadoc for $variant.name."
+            source = variant.javaCompile.source
+            ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+            classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
+        }
+
+        // 生成jar文件
+        task("jar${variant.name}", type: Jar) {
+            description "Bundles compiled .class files into a JAR file for $variant.name."
+            dependsOn variant.javaCompile
+            from variant.javaCompile.destinationDir
+            exclude '**/R.class', '**/R$*.class', '**/R.html', '**/R.*.html'
+        }
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -23,6 +40,9 @@ android {
         }
     }
 }
+
+
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
