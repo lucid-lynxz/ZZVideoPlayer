@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply from: "../config/dependencies.gradle"
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
@@ -26,7 +25,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation(test.junit)
     implementation(libs.appcompat)
-    implementation(libs.kotlin)
+    implementation(libs.kotlinLib)
     implementation(libs.rxJava2)
     implementation(libs.rxAndroid2)
     implementation(libs.rxPermission2)
@@ -34,5 +33,5 @@ dependencies {
     // 开发调试用
     implementation project(':zzplayerlibrary')
     // 测试使用发布版本
-    // compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.8'
+    // implementation 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.8'
 }

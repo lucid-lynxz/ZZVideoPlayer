@@ -1,4 +1,7 @@
 [博客地址](https://juejin.im/post/5a433b236fb9a045293708be)
+#[![Build Status](https://travis-ci.org/tyzlmjj/Codec.svg?branch=master)](https://travis-ci.org/tyzlmjj/Codec)	
+#[![Download](https://api.bintray.com/packages/tyzlmjj/maven/codec/images/download.svg) ](https://bintray.com/tyzlmjj/maven/codec/view)
+
 
 ### 注意: 若要测试播放本地视频,请先将项目中的 `app/src/main/res/raw/shuai_dan_ge.mp4` 拷贝到手机sd卡目录下
 
@@ -22,7 +25,7 @@
 ```gradle
 dependencies {
     ......
-    compile 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.8'
+    implementation 'org.lynxz.zzplayerlibrarys:zzplayer:1.0.8'
 }
 ```
 
@@ -60,6 +63,7 @@ mVideoUrl = "http://hometime-img-service.b0.upaiyun.com/1703070530554567833.mp4"
 ```java
 mVp = (VideoPlayer) findViewById(R.id.vp);
 mVp.setTitle("视频名称"); //设置视频名称
+mVp.setToggleExpandable(boolean); //true-启用横竖屏切换按钮  false-隐藏横竖屏切换韩流
 
 mVp.setVideoUri(this,mVideoUrl);//设置视频路径
 mVp.startPlay();//开始播放

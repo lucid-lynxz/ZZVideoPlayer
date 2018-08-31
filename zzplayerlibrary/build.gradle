@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "./jcenter.gradle"
-apply from: "../config/dependencies.gradle"
 
 android {
     compileSdkVersion androidCompileSdkVersion

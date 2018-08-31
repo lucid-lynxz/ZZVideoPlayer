@@ -449,7 +449,15 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     }
 
     /**
+     * 设置是否允许横竖屏切换
+     */
+    public void setToggleExpandable(boolean enable) {
+        mController.setToggleExpandable(enable);
+    }
+
+    /**
      * 设置视频标题
+     *
      * @param title 视频标题字符串
      */
     public void setTitle(String title) {

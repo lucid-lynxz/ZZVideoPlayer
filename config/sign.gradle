@@ -7,10 +7,10 @@ android {
             keyPassword "android"
         }
         release {
-            storeFile file("../config/sb.jks")
-            storePassword "Sound679"
-            keyAlias "soundbus"
-            keyPassword "Sound679"
+            storeFile file("../config/demoKeyStore.jks")
+            storePassword "123456"
+            keyAlias "androidDemos"
+            keyPassword "123456"
         }
     }
 }

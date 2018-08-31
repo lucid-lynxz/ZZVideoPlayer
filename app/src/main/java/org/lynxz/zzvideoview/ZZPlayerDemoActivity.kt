@@ -9,18 +9,26 @@ import android.view.WindowManager
 import kotlinx.android.synthetic.main.activity_custom_player_demo.*
 import org.lynxz.zzplayerlibrary.controller.IPlayerImpl
 import org.lynxz.zzplayerlibrary.util.OrientationUtil
-import org.lynxz.zzplayerlibrary.widget.VideoPlayer
+import showToast
 import java.io.File
 
 class ZZPlayerDemoActivity : Activity() {
 
-    private var mVp: VideoPlayer? = null
     private var mVideoUrl = ""
     private var mVideoType: Int = 0
+    private var mVideoTitle = "暂无名称"
 
     private val playerImpl = object : IPlayerImpl() {
         override fun onNetWorkError() {
             showToast(R.string.zz_player_network_invalid)
+        }
+
+        override fun onComplete() {
+            super.onComplete()
+            if (TYPE_RAW_MUSIC == mVideoType) {
+                // loop
+                vp.startOrRestartPlay()
+            }
         }
 
         override fun onBack() {
@@ -53,16 +61,28 @@ class ZZPlayerDemoActivity : Activity() {
     }
 
     private fun initListener() {
-        mVp?.setPlayerController(playerImpl)
+        vp.setPlayerController(playerImpl)
     }
 
     private fun initData() {
         when (mVideoType) {
-            TYPE_URL -> mVideoUrl = "http://hometime-img-service.b0.upaiyun.com/1703070530554567833.mp4"
-            TYPE_RAW -> mVideoUrl = "android.resource://" + packageName + "/" + R.raw.tu_ling
+            TYPE_URL -> {
+                mVideoUrl = "http://hometime-img-service.b0.upaiyun.com/1703070530554567833.mp4"
+                mVideoTitle = "1703070530554567833.mp4"
+            }
+            TYPE_RAW -> {
+                mVideoUrl = "android.resource://" + packageName + "/" + R.raw.tu_ling
+                mVideoTitle = "模仿游戏"
+            }
+            TYPE_RAW_MUSIC -> {
+                mVideoUrl = "android.resource://" + packageName + "/" + R.raw.soundbus_code
+                mVideoTitle = "声连码wav"
+
+            }
             TYPE_LOCAL -> {
                 val externalCacheDir = Environment.getExternalStorageDirectory()
                 if (externalCacheDir != null && externalCacheDir.exists()) {
+                    mVideoTitle = "甩蛋歌"
                     val videoPath = externalCacheDir.absolutePath + "/shuai_dan_ge.mp4"
                     val video = File(videoPath)
                     if (video.exists()) {
@@ -75,13 +95,14 @@ class ZZPlayerDemoActivity : Activity() {
 
     private fun initView() {
         vp.apply {
-            setTitle("视频名称")
+            setTitle(mVideoTitle)
             loadAndStartVideo(this@ZZPlayerDemoActivity, mVideoUrl)
             //设置控制栏播放/暂停/全屏/退出全屏按钮图标
             setIconPlay(R.drawable.play)
             setIconPause(R.drawable.pause)
             setIconExpand(R.drawable.expand)
             setIconShrink(R.drawable.shrink)
+            setToggleExpandable(mVideoType != TYPE_RAW_MUSIC)
             //隐藏/显示控制栏时间值信息
             // hideTimes();
             // showTimes();
@@ -96,31 +117,29 @@ class ZZPlayerDemoActivity : Activity() {
         }
     }
 
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        mVp?.updateActivityOrientation()
+        vp.updateActivityOrientation()
     }
-
 
     override fun onResume() {
         super.onResume()
-        mVp?.onHostResume()
+        vp.onHostResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mVp?.onHostPause()
+        vp.onHostPause()
     }
 
     override fun onBackPressed() {
-        mVp?.onHostDestroy()
+        vp.onHostDestroy()
         finish()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mVp?.onHostDestroy()
+        vp.onHostDestroy()
     }
 
     companion object {
@@ -128,5 +147,6 @@ class ZZPlayerDemoActivity : Activity() {
         val TYPE_URL = 1
         val TYPE_RAW = 2
         val TYPE_LOCAL = 3
+        val TYPE_RAW_MUSIC = 4
     }
 }

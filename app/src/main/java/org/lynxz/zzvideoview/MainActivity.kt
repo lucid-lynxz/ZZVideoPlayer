@@ -9,6 +9,7 @@ import android.view.Window
 import android.view.WindowManager
 import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.android.synthetic.main.activity_main.*
+import showToast
 
 class MainActivity : Activity() {
     private val rxPermission by lazy { RxPermissions(this) }
@@ -25,6 +26,7 @@ class MainActivity : Activity() {
     private fun initView() {
         btn_custom.setOnClickListener { playOnlineVideo() }
         btn_custom_raw.setOnClickListener { playRawVideo() }
+        btn_custom_raw_wav.setOnClickListener { playRawVideoWav() }
         btn_custom_local.setOnClickListener { playLocalVideo() }
     }
 
@@ -34,6 +36,11 @@ class MainActivity : Activity() {
     private fun playRawVideo() {
         startActivity(Intent(this, ZZPlayerDemoActivity::class.java)
                 .putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_RAW))
+    }
+
+    private fun playRawVideoWav() {
+        startActivity(Intent(this, ZZPlayerDemoActivity::class.java)
+                .putExtra(ZZPlayerDemoActivity.KEY_VIDEO_TYPE, ZZPlayerDemoActivity.TYPE_RAW_MUSIC))
     }
 
     /**

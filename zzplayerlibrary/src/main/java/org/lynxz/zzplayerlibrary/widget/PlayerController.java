@@ -101,6 +101,17 @@ public class PlayerController extends FrameLayout implements View.OnClickListene
     }
 
     /**
+     * 设置是否允许横竖屏切换
+     */
+    public void setToggleExpandable(boolean enable) {
+        if (enable) {
+            mIvToggleExpandable.setVisibility(View.VISIBLE);
+        } else {
+            mIvToggleExpandable.setVisibility(View.GONE);
+        }
+    }
+
+    /**
      * 设置控制条功能回调
      *
      * @param controllerImpl 控制栏功能回调

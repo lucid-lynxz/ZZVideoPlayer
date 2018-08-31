@@ -1,38 +1,78 @@
 ext {
+    gradleToolVersion = '3.1.3'
+
     //Android
-    androidMinSdkVersion = 14
+    androidMinSdkVersion = 16
     androidTargetSdkVersion = 26
-    androidCompileSdkVersion = 26
-    androidBuildToolsVersion = "26.0.2"
-    androidSupportVersion = "26.1.0"
+    androidCompileSdkVersion = 27
+    androidBuildToolsVersion = "27.0.3"
+    androidSupportVersion = "27.1.1"
     testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
 
     //Libraries
-    constraintLayoutVersion = '1.0.2'
+    multiDexVersion = '1.0.3'
+    constraintLayoutVersion = '1.1.2'
     baseRecyclerViewAdapterHelperVersion = '2.9.35'
     rollviewpagerVersion = '1.4.6'
     swipeDelMenuLayoutVersion = 'V1.2.5'
     bgaSswipebacklayoutVersion = '1.0.8@aar'
     bannerVersion = '1.4.10'
     recyclerviewfastscrollerVersion = '0.1.3'
+    lottieVersion = '2.5.4'
+    siyamedShapeIamgeviewVersion = '0.9.3@aar'
+
+    // 仿微信图片压缩,生成jpeg图片
+    lubanVersion = '1.1.8'
+
+    kotlinLibVersion = '1.2.60'
 
     glideVersion = "3.8.0"
-    butterKnifeVersion = '8.4.0'
+    materialprogressbarVersion = "1.4.1"
+    butterKnifeVersion = '8.8.1'
     flycoTabLayoutVersion = "2.1.2@aar"
+    switchButtonVersion = '0.0.3@aar'
+    systembartintVersion = '1.0.3'
+    magicindicatorVersion = '1.5.0'
+    statusBarUtilVersion = '1.2.5'
+    photoViewVersion = '2.1.4'
+
+    zxingVersion = '3.3.0'
+    videoCacheVersion = '2.7.0'
+
+    gsonVersion = '2.4'
 
     rxJavaVersion = '1.1.0'
     rxAndroidVersion = '1.1.0'
     rxJava2Version = '2.1.1'
+    rxBinder2Version = '2.1.1'
+    retrofit2LoggerVersion = '3.8.1'
+    rxkotlin2Version = '2.1.0'
     rxAndroid2Version = '2.0.1'
     rxPermission2Version = '0.9.4@aar'
-    retrofit2Version = "2.0.0-beta3"
+    retrofit2Version = "2.3.0"
 
-    // kotin
-    kotlinVersion = "1.2.30"
+    leakcanaryVersion = "1.5.1"
+    stethoVersion = "1.4.2"
+
+    // arch support 库
+    lifeCycleVersion = '1.1.1'
+    roomVersion = '1.1.1'
+
+    // 极光推送
+    jpushVersion = "3.1.3"
+    jcoreVersion = "1.2.1"
+
+    // 高德地图: https://lbs.amap.com/api/android-location-sdk/guide/create-project/android-studio-create-project/
+    amapLocationVersion = '4.1.0'
 
     // test
-    espressoVersion = '2.2.2'
     jUnitVersion = '4.12'
+    mockItoVersion = '2.8.9'
+    powermockVersion = '1.7.1'
+
+    espressoVersion = '3.0.2'
+    supportTestRunnerVersion = '1.0.2'
+    supportTestRulesVersion = '1.0.2'
 
 
     libs = [
@@ -43,38 +83,81 @@ ext {
             recyclerView                 : "com.android.support:recyclerview-v7:${androidSupportVersion}",
             supportV13                   : "com.android.support:support-v13:${androidSupportVersion}",
             cardView                     : "com.android.support:cardview-v7:${androidSupportVersion}",
-            constraintLayout             : "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}",
+            multiDex                     : "com.android.support:multidex:${multiDexVersion}",
 
-            kotlin                       : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion",
+            constraintLayout             : "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}",
             baseRecyclerViewAdapterHelper: "com.github.CymChad:BaseRecyclerViewAdapterHelper:${baseRecyclerViewAdapterHelperVersion}",
             rollviewpager                : "com.jude:rollviewpager:${rollviewpagerVersion}",
             swipeDelMenuLayout           : "com.github.mcxtzhang:SwipeDelMenuLayout:${swipeDelMenuLayoutVersion}",
             bgaSwipebacklayout           : "cn.bingoogolapple:bga-swipebacklayout:${bgaSswipebacklayoutVersion}",
             banner                       : "com.youth.banner:banner:${bannerVersion}",
             recyclerviewfastscroller     : "xyz.danoz:recyclerviewfastscroller:${recyclerviewfastscrollerVersion}",
+            siyamedShapeIamgeview        : "com.github.siyamed:android-shape-imageview:$siyamedShapeIamgeviewVersion",
+            magicIndicator               : "com.github.hackware1993:MagicIndicator:$magicindicatorVersion",
+
+            luban                        : "top.zibin:Luban:$lubanVersion",
+
+            videoCache                   : "com.danikula:videocache:${videoCacheVersion}",
+            gson                         : "com.google.code.gson:gson:${gsonVersion}",
 
             rxJava                       : "io.reactivex:rxjava:${rxJavaVersion}",
             rxAndroid                    : "io.reactivex:rxandroid:${rxAndroidVersion}",
 
+            kotlinLib                    : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinLibVersion}",
+
             rxJava2                      : "io.reactivex.rxjava2:rxjava:${rxJava2Version}",
             rxAndroid2                   : "io.reactivex.rxjava2:rxandroid:${rxAndroid2Version}",
+            rxBinding2                   : "com.jakewharton.rxbinding2:rxbinding:${rxBinder2Version}",
+            rxKotlin2                    : "io.reactivex.rxjava2:rxkotlin:$rxkotlin2Version",
             retrofit2                    : "com.squareup.retrofit2:retrofit:${retrofit2Version}",
             retrofit2Gson                : "com.squareup.retrofit2:converter-gson:${retrofit2Version}",
             retrofit2Rxjava              : "com.squareup.retrofit2:adapter-rxjava:${retrofit2Version}",
+            retrofit2Rxjava2             : "com.squareup.retrofit2:adapter-rxjava2:${retrofit2Version}",
+            retrofit2Logging             : "com.squareup.okhttp3:logging-interceptor:${retrofit2LoggerVersion}",
+
+            stetho                       : "com.facebook.stetho:stetho:$stethoVersion",
+            stethoOkhttp3                : "com.facebook.stetho:stetho-okhttp3:$stethoVersion",
+            leakcanary                   : "com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion",
+
             rxPermission2                : "com.tbruyelle.rxpermissions2:rxpermissions:${rxPermission2Version}",
             glide                        : "com.github.bumptech.glide:glide:${glideVersion}",
+            materialprogressbar          : "me.zhanghai.android.materialprogressbar:library:${materialprogressbarVersion}",
+            lottie                       : "com.airbnb.android:lottie:${lottieVersion}",
 
             butterKnife                  : "com.jakewharton:butterknife:${butterKnifeVersion}",
             butterKnifeCompiler          : "com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
-            flycoTabLayout               : "com.flyco.tablayout:FlycoTabLayout_Lib:${flycoTabLayoutVersion}"
-    ]
+            flycoTabLayout               : "com.flyco.tablayout:FlycoTabLayout_Lib:${flycoTabLayoutVersion}",
+            switchButton                 : "com.github.zcweng:switch-button:${switchButtonVersion}",
+            systembartint                : "com.readystatesoftware.systembartint:systembartint:${systembartintVersion}",
+            zxing                        : "com.google.zxing:core:${zxingVersion}",
+            statusBarUtil                : "com.jaeger.statusbaruitl:library:$statusBarUtilVersion",
+            photoView                    : "com.github.chrisbanes:PhotoView:$photoViewVersion",
 
-    classPathLibs = [
-            kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+            jpush                        : "cn.jiguang.sdk:jpush:${jpushVersion}",
+            jcore                        : "cn.jiguang.sdk:jcore:${jcoreVersion}",
+            amapLocation                 : "com.amap.api:location:${amapLocationVersion}",
+
+            // ViewModel and LiveData
+            lifeCycleExtension           : "android.arch.lifecycle:extensions:$lifeCycleVersion",
+            lifeCycleCompiler            : "android.arch.lifecycle:compiler:$lifeCycleVersion",
+            roomRuntime                  : "android.arch.persistence.room:runtime:$roomVersion",
+            roomCompiler                 : "android.arch.persistence.room:compiler:$roomVersion"
     ]
 
     test = [
-            espresso: "com.android.support.test.espresso:espresso-core:${espressoVersion}",
-            junit   : "junit:junit:${jUnitVersion}",
+            junit              : "junit:junit:${jUnitVersion}",
+            mockIto            : "org.mockito:mockito-core:${mockItoVersion}",
+            powermockJunit4    : "org.powermock:powermock-module-junit4:${powermockVersion}",
+            powermockApiMockito: "org.powermock:powermock-api-mockito2:${powermockVersion}",
+
+            espresso           : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            supportTestRunner  : "com.android.support.test:runner:${supportTestRunnerVersion}",
+            supportTestRules   : "com.android.support.test:rules:${supportTestRulesVersion}"
+    ]
+
+    classPathLib = [
+            gradleTool        : "com.android.tools.build:gradle:$gradleToolVersion",
+            kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinLibVersion"
+
     ]
 }

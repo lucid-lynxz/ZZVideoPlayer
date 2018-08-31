@@ -1,71 +1,59 @@
-package org.lynxz.zzvideoview
 import android.app.Activity
-import android.app.Application
+import android.content.Context
 import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
+import android.support.v4.content.PermissionChecker
 import android.text.TextUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import org.lynxz.zzvideoview.BuildConfig
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Created by lynxz on 13/01/2017.
- * 博客: https://juejin.im/user/5812c2b0570c3500605a15ff
- *
- * 常用扩展函数
+ * 扩展函数
  */
 fun CharSequence.isEmpty(): Boolean {
     return TextUtils.isEmpty(this)
 }
 
+fun Context.showToast(msg: String) {
+    if (msg.isNotBlank()) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun Context.showToast(msgId: Int) {
+    Toast.makeText(this, msgId, Toast.LENGTH_SHORT).show()
+}
+
+fun Context.getStringRes(@StringRes strId: Int): String {
+    return resources.getString(strId)
+}
+
 fun Fragment.showToast(msg: String) {
-    activity.runOnUiThread {
-        activity.showToast(msg)
+    if (msg.isNotBlank()) {
+        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
     }
 }
 
 fun Fragment.showToast(msgId: Int) {
-    activity.runOnUiThread {
-        activity.showToast(msgId)
+    Toast.makeText(activity, msgId, Toast.LENGTH_SHORT).show()
+}
+
+fun Fragment.getStringRes(@StringRes strResId: Int): String? {
+    return activity?.resources?.getString(strResId)
+}
+
+fun Context.isPermissionGranted(permission: String): Boolean {
+    return PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_GRANTED
+}
+
+fun Activity.hideKeyboard() {
+    this.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
+        (it as InputMethodManager).hideSoftInputFromWindow(this.currentFocus.windowToken, 0)
     }
 }
-
-fun Activity.showToast(msgId: Int) {
-    runOnUiThread {
-        application.showToast(msgId)
-    }
-}
-
-fun Activity.showToast(msg: String) {
-    runOnUiThread {
-        application.showToast(msg)
-    }
-}
-
-fun Application?.showToast(msg: String) {
-    // 在线程toast时需要先prepare()
-    // 否则报错:Can't create handler inside thread that has not called Looper.prepare()
-    // 这里统一在主线程中toast好了
-    this?.let {
-        Toast.makeText(this.applicationContext, msg, Toast.LENGTH_SHORT).show()
-    }
-}
-
-fun Application?.showToast(msgId: Int) {
-    this?.let {
-        Toast.makeText(this.applicationContext, msgId, Toast.LENGTH_SHORT).show()
-    }
-}
-
-fun Fragment.getStringRes(@StringRes resId: Int): String {
-    return this.activity.resources.getString(resId)
-}
-
-/**
- * 将当前时间戳转换为指定格式的日期字符串
- * */
-fun msec2date(format: String = "yyyy-MM-dd HH:mm:ss") = SimpleDateFormat(format).format(Date(System.currentTimeMillis()))
 
 /**
  * 保留两位小数,并返回字符串
