@@ -14,7 +14,7 @@ publish {
     groupId = 'org.lynxz.zzplayerlibrarys' // 填包名就好
     artifactId = 'zzplayer'  // bintray中对应的packagename
     uploadName = 'ZZPlayer'
-    publishVersion = '1.0.9' // 发布版本号
+    publishVersion = '1.1.0' // 发布版本号
     desc = '修复默认back图片问题'
     website = 'https://github.com/lucid-lynxz/ZZVideoPlayer'
 }
