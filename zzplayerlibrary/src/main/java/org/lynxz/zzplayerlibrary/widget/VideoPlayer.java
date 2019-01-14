@@ -16,6 +16,7 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -551,7 +552,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         mHostActivity = new WeakReference<Activity>(act);
         mVideoUri = Uri.parse(path);
         mVideoProtocol = mVideoUri.getScheme();
-        if (VideoUriProtocol.PROTOCOL_HTTP.equalsIgnoreCase(mVideoProtocol)) {
+        if (!TextUtils.isEmpty(mVideoProtocol) && mVideoProtocol.startsWith(VideoUriProtocol.PROTOCOL_HTTP)) {
             mIsOnlineSource = true;
         }
 

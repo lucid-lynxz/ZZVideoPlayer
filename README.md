@@ -70,6 +70,8 @@ mVp.startPlay();//开始播放
 
 //也可以直接设置路径并播放
 mVp.loadAndStartVideo(this, mVideoUrl); // 设置视频播放路径并开始播放
+
+mVp.setFullScreenImmediately(); // 直接使用横屏显示
 ```
 
 ### 控制栏等自定义设置
