@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.support.annotation.NonNull;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -19,12 +18,11 @@ public class OrientationUtil {
     /**
      * 获取屏幕方向
      *
-     * @param cxt 非空上下文
      * @return {@link #HORIZONTAL}  {@link #HORIZONTAL}
      */
-    public static int getOrientation(@NonNull Context cxt) {
+    public static int getOrientation(Context cxt) {
         int orientation = VERTICAL;
-        if (cxt.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (cxt != null && cxt.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             orientation = HORIZONTAL;
         }
         return orientation;
@@ -34,10 +32,14 @@ public class OrientationUtil {
      * 指定屏幕方向
      * P.S. 这样强制指定后,旋转手机时屏幕不会旋转...
      *
-     * @param act 非空 Activity上下文
+     * @param act  Activity上下文
      * @param targetOrientation {@link #HORIZONTAL} {@link #VERTICAL}
      */
-    public static void forceOrientation(@NonNull Activity act, int targetOrientation) {
+    public static void forceOrientation(Activity act, int targetOrientation) {
+        if (act == null) {
+            return;
+        }
+
         int oriOrientation = act.getRequestedOrientation();
         Window window = act.getWindow();
         if (targetOrientation == HORIZONTAL) {//竖屏 -> 横屏
@@ -67,7 +69,11 @@ public class OrientationUtil {
      *
      * @param act 非空 Activity上下文
      */
-    public static void changeOrientation(@NonNull Activity act) {
+    public static void changeOrientation(Activity act) {
+        if (act == null) {
+            return;
+        }
+
         int targetOrientation = VERTICAL;
         if (getOrientation(act) == VERTICAL) {
             targetOrientation = HORIZONTAL;

@@ -3,6 +3,7 @@ package org.lynxz.zzplayerlibrary.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -11,12 +12,13 @@ import android.widget.TextView;
 
 import org.lynxz.zzplayerlibrary.R;
 import org.lynxz.zzplayerlibrary.controller.ITitleBarImpl;
+import org.lynxz.zzplayerlibrary.temple.IPlayerTitleBar;
 
 
 /**
  * Created by lynxz on 2016/4/28.
  */
-public class PlayerTitleBar extends LinearLayout implements View.OnClickListener {
+public class PlayerTitleBar extends LinearLayout implements View.OnClickListener, IPlayerTitleBar {
 
     private TextView mTvTitle;
     private ITitleBarImpl mTitleBarImpl;
@@ -50,12 +52,14 @@ public class PlayerTitleBar extends LinearLayout implements View.OnClickListener
         rlBack.setOnClickListener(this);
     }
 
-    public void setTitle(String title) {
+    @Override
+    public void setTitle(@Nullable CharSequence title) {
         if (!TextUtils.isEmpty(title)) {
             mTvTitle.setText(title);
         }
     }
 
+    @Override
     public void setTitleBarImpl(ITitleBarImpl titleBarImpl) {
         mTitleBarImpl = titleBarImpl;
     }

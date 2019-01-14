@@ -1,6 +1,5 @@
 package org.lynxz.zzplayerlibrary.widget;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -111,7 +110,10 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             if (mIPlayerImpl != null) {
                 mIPlayerImpl.onBack();
             } else {
-                mHostActivity.get().finish();
+                Activity activity = mHostActivity.get();
+                if (activity != null) {
+                    activity.finish();
+                }
             }
         }
     };
@@ -190,7 +192,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         }
     };
     private GestureDetector mGestureDetector;
-    private View mRlPlayerContainer;
+    private RelativeLayout mRlPlayerContainer;
     private AudioManager mAudioManager;
     private boolean mEnableAdjustBrightness = true;
     private boolean mEnableAdjustVolume = true;
@@ -359,41 +361,41 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
     private IPlayerImpl mIPlayerImpl = null;
 
     public VideoPlayer(Context context) {
-        super(context);
-        initView(context);
+        this(context, null);
     }
 
     public VideoPlayer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initView(context);
+        this(context, attrs, 0);
     }
 
     public VideoPlayer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);
     }
+//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//    public VideoPlayer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+//        super(context, attrs, defStyleAttr, defStyleRes);
+//        initView(context);
+//    }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public VideoPlayer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initView(context);
-    }
 
     private void initView(Context context) {
-        mContext = context;
         inflate(context, R.layout.zz_video_player, this);
-        mRlPlayerContainer = findViewById(R.id.rl_player);
-        mVv = (ZZVideoView) findViewById(R.id.zzvv_main);
-        mTitleBar = (PlayerTitleBar) findViewById(R.id.pt_title_bar);
-        mController = (PlayerController) findViewById(R.id.pc_controller);
+        mContext = context;
 
-        mFlLoading = (FrameLayout) findViewById(R.id.fl_loading);
-        mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
+        mRlPlayerContainer = findViewById(R.id.zz_player_player_container);
+        mVv = findViewById(R.id.zzvv_main);
+
+        mTitleBar = findViewById(R.id.zz_player_title_bar);
+        mTitleBar.setTitleBarImpl(mTitleBarImpl);
+        mController = findViewById(R.id.zz_player_controller);
+        mController.setControllerImpl(mControllerImpl);
+
+        mFlLoading = findViewById(R.id.zz_player_fl_loading);
+        mPbLoading = findViewById(R.id.zz_player_pb_loading);
 
         initAnimation();
 
-        mTitleBar.setTitleBarImpl(mTitleBarImpl);
-        mController.setControllerImpl(mControllerImpl);
         //        mVv.setZOrderOnTop(true);
         //        mVv.setBackgroundColor(Color.RED);
         mVv.setOnTouchListener(this);
@@ -460,7 +462,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      *
      * @param title 视频标题字符串
      */
-    public void setTitle(String title) {
+    public void setTitle(CharSequence title) {
         mTitleBar.setTitle(title);
     }
 
@@ -509,7 +511,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         resetUpdateTimer();
     }
 
-
     public void goOnPlay() {
         // 在线视频,网络异常时,不进行加载播放
         if (mIsOnlineSource && !mNetworkAvailable) {
@@ -528,7 +529,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         if (canPause()) {
             mVv.pause();
         }
-
         //        stopUpdateTimer();
     }
 
@@ -628,6 +628,7 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         }
     }
 
+
     /**
      * 带动画效果的显隐标题栏和控制栏
      *
@@ -716,17 +717,22 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
      * 屏幕方向改变时,回调该方法
      */
     public void updateActivityOrientation() {
-        int orientation = OrientationUtil.getOrientation(mHostActivity.get());
+        Activity cxt = mHostActivity.get();
+        if (cxt == null) {
+            return;
+        }
+
+        int orientation = OrientationUtil.getOrientation(cxt);
 
         //更新播放器宽高
-        float width = DensityUtil.getWidthInPx(mHostActivity.get());
-        float height = DensityUtil.getHeightInPx(mHostActivity.get());
+        float width = DensityUtil.getWidthInPx(cxt);
+        float height = DensityUtil.getHeightInPx(cxt);
         if (orientation == OrientationUtil.HORIZONTAL) {
             getLayoutParams().height = (int) height;
             getLayoutParams().width = (int) width;
         } else {
-            width = DensityUtil.getWidthInPx(mHostActivity.get());
-            height = DensityUtil.dip2px(mHostActivity.get(), 200f);
+            width = DensityUtil.getWidthInPx(cxt);
+            height = DensityUtil.dip2px(cxt, 200f);
         }
         getLayoutParams().height = (int) height;
         getLayoutParams().width = (int) width;
@@ -786,7 +792,8 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
             @Override
             public void onReceive(Context context, Intent intent) {
                 // 网络变化
-                if (intent.getAction().equalsIgnoreCase(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                String action = intent.getAction();
+                if (action != null && action.equalsIgnoreCase(ConnectivityManager.CONNECTIVITY_ACTION)) {
                     mNetworkAvailable = NetworkUtil.isNetworkAvailable(mHostActivity.get());
                     mController.updateNetworkState(mNetworkAvailable || !mIsOnlineSource);
                     if (!mNetworkAvailable) {
@@ -812,12 +819,16 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
 
     private void registerNetworkReceiver() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        mHostActivity.get().registerReceiver(mNetworkReceiver, filter);
+        Activity activity = mHostActivity.get();
+        if (activity != null) {
+            activity.registerReceiver(mNetworkReceiver, filter);
+        }
     }
 
     public void unRegisterNetworkReceiver() {
-        if (mNetworkReceiver != null) {
-            mHostActivity.get().unregisterReceiver(mNetworkReceiver);
+        Activity activity = mHostActivity.get();
+        if (mNetworkReceiver != null && activity != null) {
+            activity.unregisterReceiver(mNetworkReceiver);
             mNetworkReceiver = null;
         }
     }
@@ -833,7 +844,6 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
                 || isPlaying();
 
     }
-
 
     /**
      * 设置进度条样式
@@ -1013,7 +1023,12 @@ public class VideoPlayer extends RelativeLayout implements View.OnTouchListener 
         } else if (flag == FLAG_DISABLE_VOLUME_CHANGE) {
             mEnableAdjustVolume = false;
         }
-
     }
 
+    /**
+     * 马上切换横屏
+     */
+    public void setFullScreenImmediately() {
+        OrientationUtil.forceOrientation(mHostActivity.get(), OrientationUtil.HORIZONTAL);
+    }
 }
